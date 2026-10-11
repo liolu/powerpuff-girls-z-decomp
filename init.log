@@ -1,0 +1,14 @@
+[INFO ] Loading ROM from extract/jp/config.yaml
+[WARN ] Local function call from 0x0200d6ec in ARM9 main to 0x0204b738 goes to middle of function 'func_0204b71c' at 0x0204b71c, adding an external label symbol
+[WARN ] Local function call from 0x0200d788 in ARM9 main to 0x0204b738 goes to middle of function 'func_0204b71c' at 0x0204b71c, adding an external label symbol
+[WARN ] Local function call from 0x0200ebe8 in ARM9 main to 0x0204b738 goes to middle of function 'func_0204b71c' at 0x0204b71c, adding an external label symbol
+[WARN ] Local function call from 0x02011d68 in ARM9 main to 0x0204eb14 leads to a label, updating the label to be external
+[WARN ] Local function call from 0x02042b70 in ARM9 main to 0x0204b76c goes to middle of function 'func_0204b71c' at 0x0204b71c, adding an external label symbol
+[WARN ] Local function call from 0x02042e34 in ARM9 main to 0x0204b76c goes to middle of function 'func_0204b71c' at 0x0204b71c, adding an external label symbol
+[WARN ] Local function call from 0x02049660 in ARM9 main to 0x0204eb14 leads to a label, updating the label to be external
+[WARN ] Local function call from 0x0204aba0 in ARM9 main to 0x0204eb14 leads to a label, updating the label to be external
+[WARN ] Local function call from 0x0204ae98 in ARM9 main to 0x0204eb14 leads to a label, updating the label to be external
+[WARN ] Local function call from 0x02050798 in ARM9 main to 0x0206ec70 goes to middle of function 'func_0206ec60' at 0x0206ec60, adding an external label symbol
+[WARN ] Local function call from 0x0206a938 in ARM9 main to 0x0206ee2c goes to middle of function 'func_0206ee20' at 0x0206ee20, adding an external label symbol
+[WARN ] Local function call from 0x0206ca14 in ARM9 main to 0x0206ee2c goes to middle of function 'func_0206ee20' at 0x0206ee20, adding an external label symbol
+[WARN ] Local function call from 0x0206ee50 in ARM9 main to 0x0206f07c goes to middle of function 'func_0206f074' at 0x0206f074, adding an external label symbol
