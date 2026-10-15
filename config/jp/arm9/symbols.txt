@@ -1302,7 +1302,7 @@ func_0204eab4 kind:function(arm,size=0x18) addr:0x0204eab4
 func_0204eacc kind:function(arm,size=0x28) addr:0x0204eacc
 func_0204eaf4 kind:function(arm,size=0x10) addr:0x0204eaf4
 func_0204eb04 kind:function(arm,size=0x10) addr:0x0204eb04
-.L_0204eb14 kind:label(arm) addr:0x0204eb14 local
+lbl_0204eb14 kind:label(arm) addr:0x0204eb14
 func_0204eb48 kind:function(arm,size=0x68) addr:0x0204eb48
 func_0204ebb0 kind:function(arm,size=0x24) addr:0x0204ebb0
 func_0204ebd4 kind:function(arm,size=0x38) addr:0x0204ebd4
@@ -3173,3 +3173,4 @@ data_0209be74 kind:bss addr:0x0209be74
 data_0209be78 kind:bss addr:0x0209be78
 data_0209be7c kind:bss addr:0x0209be7c
 data_0209be80 kind:bss addr:0x0209be80
+data_02090420 kind:bss addr:0x02090420
