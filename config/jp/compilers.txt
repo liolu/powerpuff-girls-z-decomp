@@ -1,2 +1,43 @@
 # Source files built with another compiler than tools/configure.py MWCC_VERSION
 # <source path> <mwccarm version> [extra flags]
+src/donor/Entry.c 2.0/sp1p5
+src/donor/func_0200093c.c 2.0/sp1p5
+src/donor/func_02000950.c 2.0/sp1p5
+src/donor/func_020009fc.c 2.0/sp1p5
+src/donor/func_02000a78.c 2.0/sp1p5
+src/donor/func_02000e40.c 2.0/sp1p5
+src/donor/func_020015b0.c 2.0/sp1p5
+src/donor/func_02001aa8.c 2.0/sp1p5
+src/donor/func_02002370.c 2.0/sp1p5
+src/donor/func_0200242c.c 2.0/sp1p5
+src/donor/func_020024ec.c 2.0/sp1p5
+src/donor/func_02002508.c 2.0/sp1p5
+src/donor/func_02002524.c 2.0/sp1p5
+src/donor/func_02002540.c 2.0/sp1p5
+src/donor/func_0200255c.c 2.0/sp1p5
+src/donor/func_020025a4.c 2.0/sp1p5
+src/donor/func_02002600.c 2.0/sp1p5
+src/donor/func_020042d0.c 2.0/sp1p5
+src/donor/func_0200438c.c 2.0/sp1p5
+src/donor/func_02005518.c 2.0/sp1p5
+src/donor/func_02005d44.c 2.0/sp1p5
+src/donor/func_0200657c.c 2.0/sp1p5
+src/donor/func_02008aa4.c 2.0/sp1p5
+src/donor/func_02008abc.c 2.0/sp1p5
+src/donor/func_02008ad0.c 2.0/sp1p5
+src/donor/func_02008ae4.c 2.0/sp1p5
+src/donor/func_02008b04.c 2.0/sp1p5
+src/donor/func_02008b1c.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/donor/func_02008bd4.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/donor/func_02008c3c.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/donor/func_02008d40.c 2.0/sp1p5
+src/donor/func_02008d84.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/donor/func_02008dfc.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/donor/func_02008e2c.c 2.0/sp1p5
+src/donor/func_02008e50.c 2.0/sp1p5
+src/donor/func_02008e6c.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/donor/func_02008f28.c 2.0/sp1p5
+src/donor/func_02008f5c.c 2.0/sp1p5
+src/donor/func_02008f90.c 2.0/sp1p5
+src/donor/func_02009040.c 2.0/sp1p5
+src/donor/func_0200905c.c 2.0/sp1p5
