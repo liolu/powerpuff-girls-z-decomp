@@ -904,3 +904,9 @@ src/donor/func_0206e7b4.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
 src/donor/func_0206e7fc.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
 src/donor/func_0206ee68.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
 src/donor/func_020701a0.c 2.0/sp1p5
+src/auto/func_02008c08.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/auto/func_02008c68.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/auto/func_02008d5c.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/auto/func_02008dac.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/auto/func_02008dd4.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
+src/auto/func_02008fbc.c 2.0/sp1p5 -O4,p -lang c99 -ipa file -inline on,noauto
