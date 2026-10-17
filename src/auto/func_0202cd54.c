@@ -1,0 +1,25 @@
+#include "m2c.h"
+
+M2C_UNK func_0206f5c4(void *, M2C_UNK);             /* extern */
+M2C_UNK func_0206f604(void *, s32);                 /* extern */
+
+s32 func_0202cd54(void *arg0) {
+    s32 var_r6;
+    void *var_r7;
+
+    if ((u32) (M2C_FIELD(arg0, s8 *, 7) - 2) <= 1U) {
+        var_r6 = 0;
+        if ((s32) M2C_FIELD(arg0, s8 *, 8) > 0) {
+            var_r7 = arg0;
+            do {
+                if ((s32) M2C_FIELD(var_r7, s16 *, 0x6E) >= 3) {
+                    func_0206f604(arg0, var_r6);
+                    func_0206f5c4(arg0, 5);
+                }
+                var_r6 += 1;
+                var_r7 += 0xC;
+            } while (var_r6 < (s32) M2C_FIELD(arg0, s8 *, 8));
+        }
+    }
+    return -1;
+}
