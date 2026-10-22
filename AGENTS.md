@@ -15,7 +15,7 @@ Matching decompilation of Ppgz-Ds-Game (JP, `YPPJ`): C compiled with the origina
 python tools/configure.py jp
 ninja
 python tools/match.py verify
-python tools/auto_match.py        # m2c drafts + assembly-only functions
+python ../../studio/gametools/auto_match.py        # m2c drafts + assembly-only functions
 ```
 
 ## TODO for a new project
