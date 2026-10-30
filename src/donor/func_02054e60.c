@@ -148,9 +148,9 @@ typedef struct OSMutex {
 } OSMutex;
 extern void OS_InitMutex(OSMutex *mutex);
 extern void OS_LockMutex(OSMutex *mutex);
-extern void OS_UnlockMutex(OSMutex *mutex);
+extern void func_02051e6c(OSMutex *mutex);
 extern void OS_UnlockAllQueuedThreadMutex(OSThread *thread);
-extern BOOL OS_TryLockMutex(OSMutex *mutex);
+extern BOOL func_02051f04(OSMutex *mutex);
 typedef enum {
     REGION_MAIN_ARM9 = 0,
     REGION_MAIN_ARM7 = 1,
@@ -215,11 +215,11 @@ typedef u32 OSHeapHandle;
 typedef u64 OSTime;
 typedef u32 OSIntrMode;
 extern void OS_Init(void);
-extern void OS_InitThread(void);
+extern void func_020514e8(void);
 extern void OS_InitTick(void);
 extern void OS_InitAlarm(void);
 extern void OS_Terminate(void);
-extern void OS_SetIrqFunction(u32 type, void (*function)());
+extern void func_02050cd0(u32 type, void (*function)());
 extern void OS_EnableIrqMask(u32 mask);
 extern void OS_WaitVBlankIntr(void);
 extern void _OS_SpinWait(u32 param1);
@@ -230,7 +230,7 @@ extern u32 OS_GetArenaLo(u32 arena);
 extern u32 OS_GetArenaHi(u32 arena);
 extern void OS_SetArenaLo(u32 arena, void *addr);
 extern void *OS_AllocFromArenaLo(u32 arena, u32 size, u32 num);
-extern OSHeapHandle OS_CreateHeap(u32 arena, void *addrLo, void *addrHi);
+extern OSHeapHandle func_020527cc(u32 arena, void *addrLo, void *addrHi);
 extern void OS_SetCurrentHeap(u32 arena, OSHeapHandle heap);
 extern void OS_DumpHeap(u32 arena, OSHeapHandle heap);
 extern void *OS_AllocFromHeap(u32 arena, OSHeapHandle heap, u32 size);
@@ -247,7 +247,7 @@ extern void OS_SetPeriodicAlarm(OSAlarm *alarm, OSTime, OSTime, void (*callback)
 extern void OS_CancelAlarm(OSAlarm *alarm);
 extern OSTime OS_GetTick(void);
 extern u32 OS_GetConsoleType(void);
-extern u32 OS_GetLockID(void);
+extern u32 func_020511d8(void);
 extern u32 OS_DisableInterrupts_Irq(void);
 extern void OS_RestoreInterrupts(u32);
 extern BOOL OS_func_0206d5ac(u16, u32);
@@ -440,7 +440,7 @@ extern BOOL FS_LoadOverlay(FSOverlay *overlay, u32 overlayID);
 extern BOOL FS_UnloadOverlay(FSOverlay *overlay, u32 overlayID);
 extern CartridgeRegion fsi_ovt7;
 extern CartridgeRegion fsi_ovt9;
-extern FS_Record fsi_arc_rom;
+extern FS_Record data_02090054;
 extern u32 FS_TryLoadTable(void *buf, u32 size);
 struct FSVolume;
 typedef struct FSUnkStruct2 {

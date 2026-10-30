@@ -65,7 +65,7 @@ typedef volatile struct {
     u32 out;
     OSPrintWChar buffer[(1024 / sizeof(OSPrintWChar))];
 } OSPrintServerBuffer;
-extern void OSi_ReferSymbol(void *symbol);
+extern void func_02000b64(void *symbol);
 static inline void *OSi_AbortByUnsupportedRegister(const char *regname, const char *file, int line) {
     (void) regname;
     (void) file;
@@ -107,7 +107,7 @@ static inline u32 MI_GetUncompressedSize(const void *srcp) {
 static inline MICompressionType MI_GetCompressionType(const void *srcp) {
     return (MICompressionType) (*(u32 *) srcp & MI_COMPRESSION_TYPE_MASK);
 }
-extern void MIi_UncompressBackward(void *bottom);
+extern void func_02000950(void *bottom);
 extern void SVC_WaitByLoop(s32 count);
 extern void SVC_CpuSet(const void *srcp, void *destp, u32 dmaCntData);
 extern void SVC_CpuSetFast(const void *srcp, void *destp, u32 dmaCntData);
@@ -159,7 +159,7 @@ extern void OS_SpinWait(u32 cycle);
 typedef u32 OSIrqMask;
 extern void OS_WaitInterrupt(BOOL clear, OSIrqMask irqFlags);
 extern void OS_WaitVBlankIntr(void);
-extern u32 SDK_AUTOLOAD_DTCM_START[];
+extern u32 data_027e0000[];
 typedef volatile struct {
 
     u8 sys_and_irq_stack[(0x4000 - 0x40 - 0x40)];
@@ -413,7 +413,7 @@ extern void OSi_CheckStack(const char *file, int line, const OSThread *thread);
 extern u32 OSi_GetSystemStackPointer(void);
 extern u32 OSi_GetCurrentStackPointer(void);
 extern OSThread *OSi_GetIdleThread(void);
-extern void OS_InitThread(void);
+extern void func_020514e8(void);
 extern BOOL OS_IsThreadAvailable(void);
 extern void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio);
 extern void OS_ExitThread(void);
@@ -431,9 +431,9 @@ extern void OS_WakeupThread(OSThreadQueue *queue);
 extern void OS_WakeupThreadDirect(OSThread *thread);
 extern void OS_DumpThreadList(void);
 extern int OS_GetNumberOfThread(void);
-extern OSThreadInfo OSi_ThreadInfo;
+extern OSThreadInfo data_0208e0e4;
 static inline OSThreadInfo *OS_GetThreadInfo(void) {
-    return &OSi_ThreadInfo;
+    return &data_0208e0e4;
 }
 static inline u32 OS_GetMaxThreadId(void) {
 
@@ -468,13 +468,13 @@ static inline void OS_SetCurrentThread(OSThread *thread) {
 extern void OS_SetThreadStackWarningOffset(OSThread *thread, u32 offset);
 extern OSStackStatus OS_GetStackStatus(const OSThread *thread);
 extern BOOL OS_SetThreadPriority(OSThread *thread, u32 prio);
-extern u32 OS_GetThreadPriority(const OSThread *thread);
+extern u32 func_02051a08(const OSThread *thread);
 extern void OS_Sleep(u32 msec);
 extern OSSwitchThreadCallback OS_SetSwitchThreadCallback(OSSwitchThreadCallback callback);
 extern void OS_DumpThreadCallTrace(const OSThread *thread);
 extern u32 OS_DisableScheduler(void);
 extern u32 OS_EnableScheduler(void);
-extern void OS_SetThreadDestructor(OSThread *thread, OSThreadDestructor dtor);
+extern void func_02051ab0(OSThread *thread, OSThreadDestructor dtor);
 extern OSThreadDestructor OS_GetThreadDestructor(const OSThread *thread);
 extern void OS_SetThreadParameter(OSThread *thread, void *parameter);
 extern void *OS_GetThreadParameter(const OSThread *thread);
@@ -500,7 +500,7 @@ static inline OSThread *OS_GetNextThread(const OSThread *thread) {
     return thread->next;
 }
 extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg);
-extern void OSi_EnterTimerCallback(u32 timerNo, void (*callback)(void *), void *arg);
+extern void func_02050da0(u32 timerNo, void (*callback)(void *), void *arg);
 typedef void (*OSIrqFunction)(void);
 typedef struct {
     void (*func)(void *);
@@ -508,10 +508,10 @@ typedef struct {
     void *arg;
 } OSIrqCallbackInfo;
 extern OSIrqFunction OS_IRQTable[];
-extern OSIrqCallbackInfo OSi_IrqCallbackInfo[(7 + 1)];
+extern OSIrqCallbackInfo data_0208e05c[(7 + 1)];
 extern void OS_IrqDummy(void);
-extern void OS_IrqHandler(void);
-extern void OS_IrqHandler_ThreadSwitch(void);
+extern void func_01ff8000(void);
+extern void func_01ff8058(void);
 static inline BOOL OS_EnableIrq(void) {
     u16 prep                               = (*(REGType16v *) (0x04000000 + 0x208));
     (*(REGType16v *) (0x04000000 + 0x208)) = (1UL << 0);
@@ -537,19 +537,19 @@ extern OSIrqMask OS_ResetRequestIrqMask(OSIrqMask intr);
 static inline OSIrqMask OS_GetRequestIrqMask(void) {
     return (*(REGType32v *) (0x04000000 + 0x214));
 }
-extern void OS_InitIrqTable(void);
-extern void OS_SetIrqFunction(OSIrqMask intrBit, OSIrqFunction function);
+extern void func_02050cb8(void);
+extern void func_02050cd0(OSIrqMask intrBit, OSIrqFunction function);
 extern OSIrqFunction OS_GetIrqFunction(OSIrqMask intrBit);
 static inline void OS_SetIrqCheckFlag(OSIrqMask intr) {
-    *(vu32 *) ((((u32) SDK_AUTOLOAD_DTCM_START) + 0x00003fc0) + 0x38) |= (u32) intr;
+    *(vu32 *) ((((u32) data_027e0000) + 0x00003fc0) + 0x38) |= (u32) intr;
 }
 static inline void OS_ClearIrqCheckFlag(OSIrqMask intr) {
-    *(vu32 *) ((((u32) SDK_AUTOLOAD_DTCM_START) + 0x00003fc0) + 0x38) &= (u32) ~intr;
+    *(vu32 *) ((((u32) data_027e0000) + 0x00003fc0) + 0x38) &= (u32) ~intr;
 }
 static inline OSIrqMask OS_GetIrqCheckFlag(void) {
-    return *(OSIrqMask *) ((((u32) SDK_AUTOLOAD_DTCM_START) + 0x00003fc0) + 0x38);
+    return *(OSIrqMask *) ((((u32) data_027e0000) + 0x00003fc0) + 0x38);
 }
-extern void OS_WaitIrq(BOOL clear, OSIrqMask irqFlags);
+extern void func_02050b38(BOOL clear, OSIrqMask irqFlags);
 extern void OS_WaitAnyIrq(void);
 static inline vu32 OS_GetVBlankCount(void) {
     return *(vu32 *) (0x02000000 + 0x007ffc3c);
@@ -559,28 +559,28 @@ static inline void OSi_SetVBlankCount(u32 count) {
 }
 extern void OS_SetIrqStackWarningOffset(u32 offset);
 extern OSStackStatus OS_GetIrqStackStatus(void);
-extern void OS_SetIrqStackChecker(void);
+extern void func_02050ea0(void);
 extern void OSi_CheckIrqStack(char *file, int line);
 typedef volatile struct OSLockWord {
     u32 lockFlag;
     u16 ownerID;
     u16 extension;
 } OSLockWord;
-extern void OS_InitLock(void);
+extern void func_02050ed4(void);
 extern s32 OS_LockByWord(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
 extern s32 OS_LockCartridge(u16 lockID);
 extern s32 OS_LockCard(u16 lockID);
-extern s32 OS_UnlockByWord(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
+extern s32 func_02051070(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
 extern s32 OS_UnlockCartridge(u16 lockID);
-extern s32 OS_UnlockCard(u16 lockID);
+extern s32 func_02051184(u16 lockID);
 extern s32 OS_UnLockByWord(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
 extern s32 OS_UnLockCartridge(u16 lockID);
 extern s32 OS_UnLockCard(u16 lockID);
 extern s32 OS_TryLockByWord(u16 lockID, OSLockWord *lockp, void (*crtlFuncp)(void));
-extern s32 OS_TryLockCartridge(u16 lockID);
+extern s32 func_02051118(u16 lockID);
 extern s32 OS_TryLockCard(u16 lockID);
 extern u16 OS_ReadOwnerOfLockWord(OSLockWord *lockp);
-extern s32 OS_GetLockID(void);
+extern s32 func_020511d8(void);
 extern void OS_ReleaseLockID(u16 lockID);
 typedef enum {
     OS_TIMER_PRESCALER_1    = (0UL << 0),
@@ -619,7 +619,7 @@ extern void OS_StopTimer(OSTimer id);
 extern void OS_StopTimer32(OSTimer32 id);
 extern void OS_StopTimer48(OSTimer48 id);
 extern void OS_StopTimer64(void);
-extern BOOL OS_IsRunOnEmulator(void);
+extern BOOL func_02051bb4(void);
 extern u32 OS_GetConsoleType(void);
 typedef struct OSMessageQueue OSMessageQueue;
 typedef void *OSMessage;
@@ -653,13 +653,13 @@ struct OSMutex {
 };
 extern void OS_InitMutex(OSMutex *mutex);
 extern void OS_LockMutex(OSMutex *mutex);
-extern void OS_UnlockMutex(OSMutex *mutex);
-extern BOOL OS_TryLockMutex(OSMutex *mutex);
+extern void func_02051e6c(OSMutex *mutex);
+extern BOOL func_02051f04(OSMutex *mutex);
 extern void OSi_UnlockAllMutex(OSThread *thread);
 typedef void (*OSExceptionHandler)(u32, void *);
 extern void OS_SetExceptionVectorUpper(void);
 extern void OS_SetExceptionVectorLower(void);
-extern void OS_InitException(void);
+extern void func_020528bc(void);
 extern void OS_SetUserExceptionHandler(OSExceptionHandler handler, void *arg);
 extern void OS_EnableUserExceptionHandlerOnDebugger(void);
 extern void OS_Init(void);
@@ -686,8 +686,8 @@ extern void OS_InitArenaEx(void);
 extern void *OS_GetArenaInfo(void);
 extern void *OS_GetArenaHi(OSArenaId id);
 extern void *OS_GetArenaLo(OSArenaId id);
-extern void *OS_GetInitArenaHi(OSArenaId id);
-extern void *OS_GetInitArenaLo(OSArenaId id);
+extern void *func_02052278(OSArenaId id);
+extern void *func_0205235c(OSArenaId id);
 extern void OS_SetArenaHi(OSArenaId id, void *newHi);
 extern void OS_SetArenaLo(OSArenaId id, void *newLo);
 extern void *OS_AllocFromArenaLo(OSArenaId id, u32 size, u32 align);
@@ -855,10 +855,10 @@ static inline void *OS_AllocFromWramSubPrivArenaHi(u32 size, u32 align) {
     return OS_AllocFromArenaHi(OS_ARENA_WRAM_SUBPRIV, size, align);
 }
 static inline void OS_InitArenaHi(OSArenaId id) {
-    OS_SetArenaHi((id), OS_GetInitArenaHi((OSArenaId) id));
+    OS_SetArenaHi((id), func_02052278((OSArenaId) id));
 }
 static inline void OS_InitArenaLo(OSArenaId id) {
-    OS_SetArenaLo((id), OS_GetInitArenaLo(id));
+    OS_SetArenaLo((id), func_0205235c(id));
 }
 static inline void OS_InitArenaHiAndLo(OSArenaId id) {
     OS_InitArenaHi(id);
@@ -870,7 +870,7 @@ typedef int OSHeapHandle;
 typedef void (*OSAllocVisitor)(void *obj, u32 size);
 extern void *OS_InitAlloc(OSArenaId id, void *arenaStart, void *arenaEnd, int maxHeaps);
 extern void OS_ClearAlloc(OSArenaId id);
-extern OSHeapHandle OS_CreateHeap(OSArenaId id, void *start, void *end);
+extern OSHeapHandle func_020527cc(OSArenaId id, void *start, void *end);
 extern void OS_DestroyHeap(OSArenaId id, OSHeapHandle heap);
 extern void OS_AddToHeap(OSArenaId id, OSHeapHandle heap, void *start, void *end);
 extern OSHeapHandle OS_SetCurrentHeap(OSArenaId id, OSHeapHandle heap);
@@ -1125,7 +1125,7 @@ typedef struct NVRAMConfigEx {
 extern void MIi_CpuClear16(u16 data, void *destp, u32 size);
 extern void MIi_CpuCopy16(const void *srcp, void *destp, u32 size);
 extern void MIi_CpuSend16(const void *srcp, volatile void *destp, u32 size);
-extern void MIi_CpuClear32(u32 data, void *destp, u32 size);
+extern void func_02053468(u32 data, void *destp, u32 size);
 extern void MIi_CpuCopy32(const void *srcp, void *destp, u32 size);
 extern void MIi_CpuSend32(const void *srcp, volatile void *destp, u32 size);
 extern void MIi_CpuClearFast(u32 data, void *destp, u32 size);
@@ -1134,7 +1134,7 @@ static inline void MI_CpuFill32(void *dest, u32 data, u32 size) {
     ((void) 0);
     ((void) 0);
 
-    MIi_CpuClear32(data, dest, size);
+    func_02053468(data, dest, size);
 }
 static inline void MI_CpuCopy32(const void *src, void *dest, u32 size) {
     ((void) 0);
@@ -1283,7 +1283,7 @@ static inline fx32 FX_Mul32x64cInline(fx32 v32, fx64c v64c) {
     fx64c tmp = v64c * v32 + 0x80000000LL;
     return FX32_CAST(tmp >> 32);
 }
-extern u32 GXi_DmaId;
+extern u32 data_0207eec0;
 typedef u16 GXRgb;
 typedef u16 GXRgba;
 typedef u32 VecFx10;
@@ -1313,7 +1313,7 @@ typedef struct OSOwnerInfo {
     u16 comment[26 + 1];
     u16 commentLength;
 } OSOwnerInfo;
-extern void OS_GetOwnerInfo(OSOwnerInfo *info);
+extern void func_02052d6c(OSOwnerInfo *info);
 extern s64 OS_GetOwnerRtcOffset(void);
 extern void OS_GetMacAddress(u8 *macAddress);
 extern const GXRgb *OS_GetFavoriteColorTable(void);
@@ -1457,8 +1457,8 @@ static inline u32 OSi_CalcPRParam(u32 address, u32 size, OSiProtectionRegionBase
     return ((address & mask) | size);
 }
 extern void OS_SetProtectionRegion0(u32 param);
-extern void OS_SetProtectionRegion1(u32 param);
-extern void OS_SetProtectionRegion2(u32 param);
+extern void func_020528ac(u32 param);
+extern void func_020528b4(u32 param);
 extern void OS_SetProtectionRegion3(u32 param);
 extern void OS_SetProtectionRegion4(u32 param);
 extern void OS_SetProtectionRegion5(u32 param);
@@ -2424,17 +2424,17 @@ extern WMErrCode WM_SetMPParentSize(WMCallbackFunc callback, u16 parentSize);
 extern WMErrCode WM_SetMPFrequency(WMCallbackFunc callback, u16 mpFreq);
 extern WMErrCode WM_SetMPInterval(WMCallbackFunc callback, u16 parentInterval, u16 childInterval);
 extern WMErrCode WM_SetMPTiming(WMCallbackFunc callback, u16 parentVCount, u16 childVCount);
-extern WMErrCode WM_SetMPDataToPortEx(WMCallbackFunc callback, void *arg, const u16 *sendData, u16 sendDataSize,
-                                      u16 destBitmap, u16 port, u16 prio);
+extern WMErrCode func_0205af9c(WMCallbackFunc callback, void *arg, const u16 *sendData, u16 sendDataSize, u16 destBitmap,
+                               u16 port, u16 prio);
 static inline WMErrCode WM_SetMPDataToPort(WMCallbackFunc callback, const u16 *sendData, u16 sendDataSize, u16 destBitmap,
                                            u16 port, u16 prio) {
-    return WM_SetMPDataToPortEx(callback, ((void *) 0), sendData, sendDataSize, destBitmap, port, prio);
+    return func_0205af9c(callback, ((void *) 0), sendData, sendDataSize, destBitmap, port, prio);
 }
 static inline WMErrCode WM_SetMPData(WMCallbackFunc callback, const u16 *sendData, u16 sendDataSize, u16 tmptt, u16 pollbmp) {
 
 #pragma unused(tmptt)
 #line 91
-    return WM_SetMPDataToPortEx(callback, ((void *) 0), sendData, sendDataSize, pollbmp, WM_PORT_RAWDATA, WM_PRIORITY_NORMAL);
+    return func_0205af9c(callback, ((void *) 0), sendData, sendDataSize, pollbmp, WM_PORT_RAWDATA, WM_PRIORITY_NORMAL);
 }
 extern WMErrCode WM_EndMP(WMCallbackFunc callback);
 extern WMErrCode WM_StartDCF(WMCallbackFunc callback, WMDcfRecvBuf *recvBuf, u16 recvBufSize);
@@ -2470,7 +2470,7 @@ extern WMErrCode WM_SetPowerSaveMode(WMCallbackFunc callback, BOOL powerSave);
 extern BOOL WMi_IsMP(void);
 extern u16 WM_GetAID(void);
 extern u16 WM_GetConnectedAIDs(void);
-extern u16 WMi_GetMPReadyAIDs(void);
+extern u16 func_0205a108(void);
 extern void WMi_DebugPrintSendQueue(WMPortSendQueue *queue);
 extern void WMi_DebugPrintAllSendQueue(void);
 extern const WMStatus *WMi_GetStatusAddress(void);
@@ -2519,22 +2519,22 @@ static inline BOOL WMi_IsDisconnectReasonFromMyself(u16 reason) {
     return (reason >= WM_DISCONNECT_REASON_FROM_MYSELF);
 }
 typedef void (*MIDmaCallback)(void *);
-extern void MI_DmaFill32(u32 dmaNo, void *dest, u32 data, u32 size);
-extern void MI_DmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_02052ee0(u32 dmaNo, void *dest, u32 data, u32 size);
+extern void func_02052f60(u32 dmaNo, const void *src, void *dest, u32 size);
 static inline void MI_DmaClear32(u32 dmaNo, void *dest, u32 size) {
-    MI_DmaFill32(dmaNo, dest, 0, size);
+    func_02052ee0(dmaNo, dest, 0, size);
 }
 extern void MI_DmaSend32(u32 dmaNo, const void *src, volatile void *dest, u32 size);
-extern void MI_DmaFill16(u32 dmaNo, void *dest, u16 data, u32 size);
-extern void MI_DmaCopy16(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_02052fd0(u32 dmaNo, void *dest, u16 data, u32 size);
+extern void func_02053050(u32 dmaNo, const void *src, void *dest, u32 size);
 static inline void MI_DmaClear16(u32 dmaNo, void *dest, u32 size) {
-    MI_DmaFill16(dmaNo, dest, 0, size);
+    func_02052fd0(dmaNo, dest, 0, size);
 }
 extern void MI_DmaSend16(u32 dmaNo, const void *src, volatile void *dest, u32 size);
-extern void MI_DmaFill32Async(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback callback, void *arg);
-extern void MI_DmaCopy32Async(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
+extern void func_020530bc(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback callback, void *arg);
+extern void func_02053180(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
 static inline void MI_DmaClear32Async(u32 dmaNo, void *dest, u32 size, MIDmaCallback callback, void *arg) {
-    MI_DmaFill32Async(dmaNo, dest, 0, size, callback, arg);
+    func_020530bc(dmaNo, dest, 0, size, callback, arg);
 }
 extern void MI_DmaSend32Async(u32 dmaNo, const void *src, volatile void *dest, u32 size, MIDmaCallback callback, void *arg);
 extern void MI_DmaFill16Async(u32 dmaNo, void *dest, u16 data, u32 size, MIDmaCallback callback, void *arg);
@@ -2544,14 +2544,14 @@ static inline void MI_DmaClear16Async(u32 dmaNo, void *dest, u32 size, MIDmaCall
 }
 extern void MI_DmaSend16Async(u32 dmaNo, const void *src, volatile void *dest, u32 size, MIDmaCallback callback, void *arg);
 extern void MI_HBlankDmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
-extern void MI_HBlankDmaCopy16(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_020533d4(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_HBlankDmaCopy32If(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_HBlankDmaCopy16If(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_VBlankDmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_VBlankDmaCopy16(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_VBlankDmaCopy32Async(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
 extern void MI_VBlankDmaCopy16Async(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
-extern void MIi_CardDmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_020536ac(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_DispMemDmaCopy(u32 dmaNo, const void *src);
 extern void MI_SendGXCommand(u32 dmaNo, const void *src, u32 commandLength);
 extern void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, MIDmaCallback callback, void *arg);
@@ -2668,7 +2668,7 @@ typedef enum {
 } MIWram;
 extern void MI_SetWramBank(MIWram cnt);
 extern MIWram MI_GetWramBank(void);
-extern u32 MI_SwapWord(u32 setData, volatile u32 *destp);
+extern u32 func_020536a4(u32 setData, volatile u32 *destp);
 extern u8 MI_SwapByte(u32 setData, volatile u8 *destp);
 static inline u8 MI_ReadByte(const void *address) {
     return *(u8 *) address;
@@ -2723,9 +2723,9 @@ typedef enum {
     CARD_REQUEST_MODE_SEND_VERIFY,
     CARD_REQUEST_MODE_SPECIAL
 } CARDRequestMode;
-extern void CARD_Init(void);
+extern void func_020593a4(void);
 extern BOOL CARD_IsAvailable(void);
-extern BOOL CARD_IsEnabled(void);
+extern BOOL func_020585d8(void);
 extern void CARD_CheckEnabled(void);
 extern void CARD_Enable(BOOL enable);
 extern u32 CARD_GetThreadPriority(void);
@@ -2734,57 +2734,55 @@ extern CARDResult CARD_GetResultCode(void);
 extern const u8 *CARD_GetRomHeader(void);
 extern void CARD_GetCacheFlushThreshold(u32 *icache, u32 *dcache);
 extern void CARD_SetCacheFlushThreshold(u32 icache, u32 dcache);
-extern BOOL CARD_IdentifyBackup(CARDBackupType type);
+extern BOOL func_02058c24(CARDBackupType type);
 extern u32 CARD_GetBackupTotalSize(void);
 extern u32 CARD_GetBackupSectorSize(void);
 extern u32 CARD_GetBackupPageSize(void);
 extern CARDBackupType CARD_GetCurrentBackupType(void);
 extern void CARD_LockBackup(u16 lock_id);
-extern void CARD_UnlockBackup(u16 lock_id);
+extern void func_020586b8(u16 lock_id);
 extern BOOL CARD_TryWaitBackupAsync(void);
 extern BOOL CARD_WaitBackupAsync(void);
 extern void CARD_CancelBackupAsync(void);
-extern BOOL CARDi_RequestStreamCommand(u32 src, u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async,
-                                       CARDRequest req_type, int req_retry, CARDRequestMode req_mode);
+extern BOOL func_02058b28(u32 src, u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async, CARDRequest req_type,
+                          int req_retry, CARDRequestMode req_mode);
 extern BOOL CARDi_RequestWriteSectorCommand(u32 src, u32 dst, u32 len, BOOL verify, MIDmaCallback callback, void *arg,
                                             BOOL is_async);
 static inline BOOL CARDi_ReadBackup(u32 src, void *dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_READ_BACKUP, 1,
-                                      CARD_REQUEST_MODE_RECV);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_READ_BACKUP, 1, CARD_REQUEST_MODE_RECV);
 }
 static inline BOOL CARDi_ProgramBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND);
 }
 static inline BOOL CARDi_WriteBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND);
 }
 static inline BOOL CARDi_VerifyBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_VERIFY_BACKUP, 1,
-                                      CARD_REQUEST_MODE_SEND);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_VERIFY_BACKUP, 1,
+                         CARD_REQUEST_MODE_SEND);
 }
 static inline BOOL CARDi_ProgramAndVerifyBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg,
                                                 BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND_VERIFY);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND_VERIFY);
 }
 static inline BOOL CARDi_WriteAndVerifyBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg,
                                               BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND_VERIFY);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND_VERIFY);
 }
 static inline BOOL CARDi_EraseBackupSector(u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SECTOR_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SPECIAL);
+    return func_02058b28(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SECTOR_BACKUP, 10,
+                         CARD_REQUEST_MODE_SPECIAL);
 }
 static inline BOOL CARDi_EraseBackupSubSector(u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SUBSECTOR_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SPECIAL);
+    return func_02058b28(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SUBSECTOR_BACKUP, 10,
+                         CARD_REQUEST_MODE_SPECIAL);
 }
 static inline BOOL CARDi_EraseBackupChip(MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand(0, 0, 0, callback, arg, is_async, CARD_REQ_ERASE_CHIP_BACKUP, 1,
-                                      CARD_REQUEST_MODE_SPECIAL);
+    return func_02058b28(0, 0, 0, callback, arg, is_async, CARD_REQ_ERASE_CHIP_BACKUP, 1, CARD_REQUEST_MODE_SPECIAL);
 }
 static inline void CARD_ReadBackupAsync(u32 src, void *dst, u32 len, MIDmaCallback callback, void *arg) {
     (void) CARDi_ReadBackup(src, dst, len, callback, arg, 1);
@@ -3028,14 +3026,14 @@ static inline const CARDRomRegion *CARD_GetRomRegionOVT(MIProcessor target) {
 }
 extern void CARD_LockRom(u16 lock_id);
 extern void CARD_UnlockRom(u16 lock_id);
-extern void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async);
+extern void func_020592ac(u32 dma, const void *src, void *dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async);
 extern BOOL CARD_TryWaitRomAsync(void);
-extern void CARD_WaitRomAsync(void);
+extern void func_02059408(void);
 static inline void CARD_ReadRomAsync(u32 dma, const void *src, void *dst, u32 len, MIDmaCallback callback, void *arg) {
-    CARDi_ReadRom(dma, src, dst, len, callback, arg, 1);
+    func_020592ac(dma, src, dst, len, callback, arg, 1);
 }
 static inline void CARD_ReadRom(u32 dma, const void *src, void *dst, u32 len) {
-    CARDi_ReadRom(dma, src, dst, len, ((void *) 0), ((void *) 0), 0);
+    func_020592ac(dma, src, dst, len, ((void *) 0), ((void *) 0), 0);
 }
 extern u32 CARDi_ReadRomID(void);
 typedef BOOL (*CARDPulledOutCallback)(void);
@@ -3044,7 +3042,7 @@ extern void CARD_SetPulledOutCallback(CARDPulledOutCallback callback);
 extern void CARD_TerminateForPulledOut(void);
 extern void CARD_PulledOutCallbackProc(void);
 extern void CARD_CheckPulledOut(void);
-extern BOOL CARD_IsPulledOut(void);
+extern BOOL func_02059680(void);
 extern BOOL CARD_IsCardIreqLo(void);
 extern BOOL CARD_CompareCardID(void);
 extern void MIi_LockCard(void);
@@ -3068,7 +3066,7 @@ static inline BOOL MIi_TryWaitCard(void) {
     return CARD_TryWaitRomAsync();
 }
 static inline void MIi_WaitCard(void) {
-    CARD_WaitRomAsync();
+    func_02059408();
 }
 typedef struct {
     u8 *destp;
@@ -3520,7 +3518,7 @@ extern s32 FS_ReadFileAsync(FSFile *p_file, void *dst, s32 len);
 extern s32 FS_WriteFile(FSFile *p_file, const void *src, s32 len);
 extern s32 FS_WriteFileAsync(FSFile *p_file, const void *src, s32 len);
 extern BOOL FS_WaitAsync(FSFile *p_file);
-extern void FS_CancelFile(FSFile *p_file);
+extern void func_0205639c(FSFile *p_file);
 extern BOOL FS_SeekFile(FSFile *p_file, s32 offset, FSSeekFileMode origin);
 static inline BOOL FS_SeekFileToBegin(FSFile *p_file) {
     return FS_SeekFile(p_file, 0, FS_SEEK_SET);
@@ -3639,27 +3637,27 @@ typedef struct {
     u8 fileid;
     u8 pad[3];
 } MBCommRequestData;
-extern int MB_Init(void *work, const MBUserInfo *user, u32 ggid, u32 tgid, u32 dma);
+extern int func_0205f5c0(void *work, const MBUserInfo *user, u32 ggid, u32 tgid, u32 dma);
 extern int MB_GetParentSystemBufSize(void);
 extern BOOL MB_SetParentCommSize(u16 sendSize);
-extern BOOL MB_SetParentCommParam(u16 sendSize, u16 maxChildren);
+extern BOOL func_0205f814(u16 sendSize, u16 maxChildren);
 extern u16 MB_GetTgid(void);
-extern void MB_End(void);
+extern void func_0205fc60(void);
 extern void MB_EndToIdle(void);
-extern void MB_DisconnectChild(u16 aid);
-extern int MB_StartParent(int channel);
+extern void func_0205fc9c(u16 aid);
+extern int func_0205fb64(int channel);
 extern int MB_StartParentFromIdle(int channel);
 extern u8 MB_CommGetChildrenNumber(void);
 extern const MBUserInfo *MB_CommGetChildUser(u16 child_aid);
 extern int MB_CommGetParentState(u16 child);
-extern void MB_CommSetParentStateCallback(MBCommPStateCallback callback);
-extern u32 MB_GetSegmentLength(FSFile *file);
+extern void func_0205ba9c(MBCommPStateCallback callback);
+extern u32 func_0205ce74(FSFile *file);
 extern BOOL MB_ReadSegment(FSFile *file, void *buf, u32 len);
-extern BOOL MB_RegisterFile(const MBGameRegistry *game_reg, const void *buf);
+extern BOOL func_0205d3c8(const MBGameRegistry *game_reg, const void *buf);
 extern void *MB_UnregisterFile(const MBGameRegistry *game_reg);
-extern BOOL MB_CommResponseRequest(u16 child_aid, MBCommResponseRequestType ack);
+extern BOOL func_0205bb9c(u16 child_aid, MBCommResponseRequestType ack);
 static inline BOOL MB_CommStartSending(u16 child_aid) {
-    return MB_CommResponseRequest(child_aid, MB_COMM_RESPONSE_REQUEST_DOWNLOAD);
+    return func_0205bb9c(child_aid, MB_COMM_RESPONSE_REQUEST_DOWNLOAD);
 }
 static inline BOOL MB_CommStartSendingAll(void) {
     u8 child, num;
@@ -3678,7 +3676,7 @@ static inline BOOL MB_CommStartSendingAll(void) {
 }
 extern BOOL MB_CommIsBootable(u16 child_aid);
 static inline BOOL MB_CommBootRequest(u16 child_aid) {
-    return MB_CommResponseRequest(child_aid, MB_COMM_RESPONSE_REQUEST_BOOT);
+    return func_0205bb9c(child_aid, MB_COMM_RESPONSE_REQUEST_BOOT);
 }
 static inline BOOL MB_CommBootRequestAll(void) {
     u8 child, num;
@@ -3813,7 +3811,7 @@ extern void MB_FakeSetVerboseScanCallback(WMCallbackFunc callback);
 extern void MB_FakeSetCompareGGIDCallback(MBFakeCompareGGIDCallbackFunc callback);
 extern void NitroMain(void);
 extern void NitroStartUp(void);
-extern void PXI_Init(void);
+extern void func_02054814(void);
 static inline void PXI_SetComponentParam(u32 param) {
     do {
         (*(vu32 *) ((0x02000000 + 0x007fff9c))) = (u32) (param);
@@ -3878,11 +3876,11 @@ static inline BOOL PXI_IsArm9CallbackReady(int fifotag) {
     return PXI_IsCallbackReady(fifotag, PXI_PROC_ARM9);
 }
 extern void PXI_SetFifoSendCallback(PXIFifoEmtpyCallback callback);
-extern int PXI_SendWordByFifo(int fifotag, u32 data, BOOL err);
-extern void PXIi_HandlerRecvFifoNotEmpty(void);
+extern int func_02054990(int fifotag, u32 data, BOOL err);
+extern void func_02054a18(void);
 extern void SND_Init(void);
-extern void SNDi_LockMutex(void);
-extern void SNDi_UnlockMutex(void);
+extern void func_02053ae4(void);
+extern void func_02053af8(void);
 typedef void (*SNDAlarmHandler)(void *);
 typedef struct SNDAlarm {
     u8 enable;
@@ -3939,10 +3937,10 @@ typedef struct SNDCommand {
     SNDCommandID id;
     u32 arg[4];
 } SNDCommand;
-extern void SND_CommandInit(void);
+extern void func_02053b0c(void);
 extern struct SNDCommand *SND_AllocCommand(u32 flags);
 extern void SND_PushCommand(struct SNDCommand *command);
-extern const SNDCommand *SND_RecvCommandReply(u32 flags);
+extern const SNDCommand *func_02053be0(u32 flags);
 extern BOOL SND_FlushCommand(u32 flags);
 extern void SND_WaitForCommandProc(u32 tag);
 extern void SND_WaitForFreeCommand(int count);
@@ -4214,7 +4212,7 @@ extern void SND_SetupChannelPsg(int chNo, SNDDuty duty, int volume, SNDChannelDa
 extern void SND_SetupChannelNoise(int chNo, int volume, SNDChannelDataShift shift, int timer, int pan);
 extern void SND_SetChannelVolume(u32 chBitMask, int volume, SNDChannelDataShift shift);
 extern void SND_SetChannelTimer(u32 chBitMask, int timer);
-extern void SND_SetChannelPan(u32 chBitMask, int pan);
+extern void func_0205392c(u32 chBitMask, int pan);
 extern void SND_SetupCapture(SNDCapture capture, SNDCaptureFormat format, void *buffer_p, u32 length, BOOL loopFlag,
                              SNDCaptureIn in, SNDCaptureOut out);
 extern void SND_SetupAlarm(int alarmNo, u32 tick, u32 period, SNDAlarmHandler handler, void *arg);
@@ -4229,7 +4227,7 @@ extern void SND_ReadDriverInfo(struct SNDDriverInfo *info);
 extern void SNDi_SetPlayerParam(int playerNo, u32 offset, u32 data, int size);
 extern void SNDi_SetTrackParam(int playerNo, u32 trackBitMask, u32 offset, u32 data, int size);
 extern void SNDi_SkipSeq(int playerNo, u32 tick);
-extern void SNDi_SetSurroundDecay(int decay);
+extern void func_02053a48(int decay);
 typedef struct SNDWork {
     SNDExChannel channel[16];
     SNDPlayer player[16];
@@ -4289,7 +4287,7 @@ typedef struct SNDTrackInfo {
     u8 chCount;
     u8 channel[16];
 } SNDTrackInfo;
-extern SNDSharedWork *SNDi_SharedWork;
+extern SNDSharedWork *data_0208ffa0;
 extern s16 SND_GetPlayerLocalVariable(int playerNo, int varNo);
 extern s16 SND_GetPlayerGlobalVariable(int varNo);
 extern u32 SND_GetPlayerTickCounter(int playerNo);
@@ -4426,14 +4424,14 @@ typedef struct SNDMidiPlayer {
     u8 prio;
     u16 pad;
 } SNDMidiPlayer;
-extern const s16 SNDi_DecibelTable[128];
+extern const s16 data_02076448[128];
 extern const s16 SNDi_DecibelSquareTable[128];
 static inline
 
     s16
     SND_CalcDecibel(int scale) {
     ((void) 0);
-    return SNDi_DecibelTable[scale];
+    return data_02076448[scale];
 }
 static inline
 
@@ -4536,7 +4534,7 @@ typedef struct NvTpData {
 typedef void (*TPRecvCallback)(TPRequestCommand command, TPRequestResult result, u16 index);
 extern void TP_Init(void);
 extern void TP_SetCallback(TPRecvCallback callback);
-extern void TP_SetCalibrateParam(const TPCalibrateParam *param);
+extern void func_02056ac0(const TPCalibrateParam *param);
 extern void TP_RequestSamplingAsync(void);
 extern u32 TP_WaitRawResult(TPData *result);
 extern u32 TP_WaitCalibratedResult(TPData *result);
@@ -4551,8 +4549,8 @@ extern u32 TP_CheckError(TPRequestCommandFlag command);
 extern void TP_GetLatestRawPointInAuto(TPData *result);
 extern void TP_GetLatestCalibratedPointInAuto(TPData *result);
 extern u16 TP_GetLatestIndexInAuto(void);
-extern u32 TP_CalcCalibrateParam(TPCalibrateParam *calibrate, u16 raw_x1, u16 raw_y1, u16 dx1, u16 dy1, u16 raw_x2, u16 raw_y2,
-                                 u16 dx2, u16 dy2);
+extern u32 func_02056d90(TPCalibrateParam *calibrate, u16 raw_x1, u16 raw_y1, u16 dx1, u16 dy1, u16 raw_x2, u16 raw_y2,
+                         u16 dx2, u16 dy2);
 extern BOOL TP_GetUserInfo(TPCalibrateParam *calibrate);
 extern void TP_GetCalibratedPoint(TPData *disp, const TPData *raw);
 extern void TP_GetUnCalibratedPoint(u16 *raw_x, u16 *raw_y, u16 dx, u16 dy);
@@ -4711,13 +4709,13 @@ struct PMiSleepCallbackInfo {
     void *arg;
     PMSleepCallbackInfo *next;
 };
-extern void PM_Init(void);
-extern u32 PM_SendUtilityCommandAsync(u32 number, PMCallback callback, void *arg);
+extern void func_020571a4(void);
+extern u32 func_020573a4(u32 number, PMCallback callback, void *arg);
 extern u32 PM_SendUtilityCommand(u32 number);
 extern u32 PM_SetBackLightAsync(PMLCDTarget target, PMBackLightSwitch sw, PMCallback callback, void *arg);
-extern u32 PM_SetBackLight(PMLCDTarget target, PMBackLightSwitch status);
-extern u32 PM_ForceToPowerOffAsync(PMCallback callback, void *arg);
-extern u32 PM_ForceToPowerOff(void);
+extern u32 func_02057590(PMLCDTarget target, PMBackLightSwitch status);
+extern u32 func_020575b8(PMCallback callback, void *arg);
+extern u32 func_02057664(void);
 extern u32 PM_SetAmpAsync(PMAmpSwitch sw, PMCallback callback, void *arg);
 extern u32 PM_SetAmp(PMAmpSwitch sw);
 extern u32 PM_SetAmpGainAsync(PMAmpGain gain, PMCallback callback, void *arg);
@@ -4733,10 +4731,10 @@ static inline void PM_SetSleepCallbackInfo(PMSleepCallbackInfo *info, PMSleepCal
 }
 extern void PM_AppendPreSleepCallback(PMSleepCallbackInfo *info);
 extern void PM_PrependPreSleepCallback(PMSleepCallbackInfo *info);
-extern void PM_AppendPostSleepCallback(PMSleepCallbackInfo *info);
+extern void func_02057b3c(PMSleepCallbackInfo *info);
 extern void PM_PrependPostSleepCallback(PMSleepCallbackInfo *info);
-extern void PM_DeletePreSleepCallback(PMSleepCallbackInfo *info);
-extern void PM_DeletePostSleepCallback(PMSleepCallbackInfo *info);
+extern void func_02057b54(PMSleepCallbackInfo *info);
+extern void func_02057b6c(PMSleepCallbackInfo *info);
 extern BOOL PM_SetLCDPower(PMLCDPower sw);
 extern PMLCDPower PM_GetLCDPower(void);
 extern u32 PMi_SendLEDPatternCommandAsync(PMLEDPattern pattern, PMCallback callback, void *arg);
@@ -4757,7 +4755,7 @@ typedef enum {
     PM_SOUND_VOLUME_OFF = 0,
     PM_SOUND_VOLUME_ON  = 1
 } PMSoundVolumeSwitch;
-extern BOOL PMi_SetLCDPower(PMLCDPower sw, PMLEDStatus led, BOOL skip, BOOL isSync);
+extern BOOL func_02057944(PMLCDPower sw, PMLEDStatus led, BOOL skip, BOOL isSync);
 extern u32 PMi_SetSoundPowerAsync(PMSoundPowerSwitch sw, PMCallback callback, void *arg);
 extern u32 PMi_SetSoundPower(PMSoundPowerSwitch sw);
 extern u32 PMi_SetSoundVolumeAsync(PMSoundVolumeSwitch sw, PMCallback callback, void *arg);
@@ -4766,236 +4764,229 @@ extern u32 PMi_GetSoundPower(PMSoundPowerSwitch *swBuf);
 extern u32 PMi_GetSoundVolume(PMSoundVolumeSwitch *swBuf);
 extern void PMi_SendPxiData(u32 data);
 extern void PMi_CommonCallback(PXIFifoTag tag, u32 data, BOOL err);
-extern u32 PMi_SendSleepStart(u16 trigger, u16 keyIntrData);
+extern u32 func_02057310(u16 trigger, u16 keyIntrData);
 extern u32 PMi_DisposeSleepEnd(void);
 extern u32 PMi_ReadRegisterAsync(u16 registerAddr, u16 *buffer, PMCallback callback, void *arg);
-extern u32 PMi_ReadRegister(u16 registerAddr, u16 *buffer);
+extern u32 func_02057470(u16 registerAddr, u16 *buffer);
 extern u32 PMi_WriteRegisterAsync(u16 registerAddr, u16 data, PMCallback callback, void *arg);
 extern u32 PMi_WriteRegister(u16 registerAddr, u16 data);
-extern u32 PMi_SetLEDAsync(PMLEDStatus status, PMCallback callback, void *arg);
-extern u32 PMi_SetLED(PMLEDStatus status);
+extern u32 func_02057498(PMLEDStatus status, PMCallback callback, void *arg);
+extern u32 func_020574ec(PMLEDStatus status);
 extern u32 PMi_GetLCDOffCount(void);
 static inline BOOL SPI_TpSamplingNow(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | 0x01000000 | (0 << 16) | (0x0000 << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | 0x01000000 | (0 << 16) | (0x0000 << 8), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_TpAutoSamplingOn(u16 vCount, u8 frequency) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | (0 << 16) | (0x0001 << 8) | (u32) frequency, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | (0 << 16) | (0x0001 << 8) | (u32) frequency, 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_TOUCHPANEL, 0x01000000 | (1 << 16) | (u32) vCount, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_TOUCHPANEL, 0x01000000 | (1 << 16) | (u32) vCount, 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_TpAutoSamplingOff(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | 0x01000000 | (0 << 16) | (0x0002 << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | 0x01000000 | (0 << 16) | (0x0002 << 8), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_TpSetupStability(u16 range) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | 0x01000000 | (0 << 16) | (0x0003 << 8) | (u32) range, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_TOUCHPANEL, 0x02000000 | 0x01000000 | (0 << 16) | (0x0003 << 8) | (u32) range, 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramWriteEnable(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x0020 << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x0020 << 8), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramWriteDisable(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x0021 << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x0021 << 8), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramReadStatusRegister(u8 *pData) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0022 << 8) | ((u32) pData >> 24), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0022 << 8) | ((u32) pData >> 24), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << 16) | (((u32) pData >> 8) & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (1 << 16) | (((u32) pData >> 8) & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (2 << 16) | (((u32) pData << 8) & 0x0000ff00), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (2 << 16) | (((u32) pData << 8) & 0x0000ff00), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramReadDataBytes(u32 address, u32 size, u8 *pData) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0023 << 8) | ((address >> 16) & 0x000000ff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0023 << 8) | ((address >> 16) & 0x000000ff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (2 << 16) | (size >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (2 << 16) | (size >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << 16) | (size & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (3 << 16) | (size & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (4 << 16) | ((u32) pData >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (4 << 16) | ((u32) pData >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (5 << 16) | ((u32) pData & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (5 << 16) | ((u32) pData & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramReadHigherSpeed(u32 address, u32 size, u8 *pData) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0024 << 8) | ((address >> 16) & 0x000000ff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0024 << 8) | ((address >> 16) & 0x000000ff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (2 << 16) | (size >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (2 << 16) | (size >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << 16) | (size & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (3 << 16) | (size & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (4 << 16) | ((u32) pData >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (4 << 16) | ((u32) pData >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (5 << 16) | ((u32) pData & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (5 << 16) | ((u32) pData & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramPageWrite(u32 address, u16 size, const u8 *pData) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0025 << 8) | ((address >> 16) & 0x000000ff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0025 << 8) | ((address >> 16) & 0x000000ff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (2 << 16) | (u32) size, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (2 << 16) | (u32) size, 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << 16) | ((u32) pData >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (3 << 16) | ((u32) pData >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (4 << 16) | ((u32) pData & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (4 << 16) | ((u32) pData & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramPageProgram(u32 address, u16 size, const u8 *pData) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0026 << 8) | ((address >> 16) & 0x000000ff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0026 << 8) | ((address >> 16) & 0x000000ff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (1 << 16) | (address & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (2 << 16) | (u32) size, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (2 << 16) | (u32) size, 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (3 << 16) | ((u32) pData >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (3 << 16) | ((u32) pData >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (4 << 16) | ((u32) pData & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (4 << 16) | ((u32) pData & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramPageErase(u32 address) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0027 << 8) | ((address >> 16) & 0x000000ff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0027 << 8) | ((address >> 16) & 0x000000ff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (1 << 16) | (address & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (1 << 16) | (address & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramSectorErase(u32 address) {
-    if (0 >
-        PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0028 << 8) | ((address >> 16) & 0x000000ff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x0028 << 8) | ((address >> 16) & 0x000000ff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (1 << 16) | (address & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (1 << 16) | (address & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramChipErase(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x002b << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x002b << 8), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramReadSiliconId(u8 *pData) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x002c << 8) | ((u32) pData >> 24), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | (0 << 16) | (0x002c << 8) | ((u32) pData >> 24), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, (1 << 16) | (((u32) pData >> 8) & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, (1 << 16) | (((u32) pData >> 8) & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x01000000 | (2 << 16) | (((u32) pData << 8) & 0x0000ff00), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x01000000 | (2 << 16) | (((u32) pData << 8) & 0x0000ff00), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_NvramSoftwareReset(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x002d << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_NVRAM, 0x02000000 | 0x01000000 | (0 << 16) | (0x002d << 8), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_MicSamplingNow(u8 type) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, 0x02000000 | 0x01000000 | (0 << 16) | (0x0040 << 8) | (u32) type, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, 0x02000000 | 0x01000000 | (0 << 16) | (0x0040 << 8) | (u32) type, 0)) {
         return 0;
     }
 
@@ -5019,38 +5010,38 @@ static inline BOOL SPI_MicAutoSamplingOn(void *pData, u32 size, u32 span, u8 adM
         temp |= (u8) 0x0020;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, 0x02000000 | (0 << 16) | (0x0041 << 8) | (u32) temp, 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, 0x02000000 | (0 << 16) | (0x0041 << 8) | (u32) temp, 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, (1 << 16) | ((u32) pData >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, (1 << 16) | ((u32) pData >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, (2 << 16) | ((u32) pData & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, (2 << 16) | ((u32) pData & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, (3 << 16) | (size >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, (3 << 16) | (size >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, (4 << 16) | (size & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, (4 << 16) | (size & 0x0000ffff), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, (5 << 16) | (span >> 16), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, (5 << 16) | (span >> 16), 0)) {
         return 0;
     }
 
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, 0x01000000 | (6 << 16) | (span & 0x0000ffff), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, 0x01000000 | (6 << 16) | (span & 0x0000ffff), 0)) {
         return 0;
     }
 
     return 1;
 }
 static inline BOOL SPI_MicAutoSamplingOff(void) {
-    if (0 > PXI_SendWordByFifo(PXI_FIFO_TAG_MIC, 0x02000000 | 0x01000000 | (0 << 16) | (0x0042 << 8), 0)) {
+    if (0 > func_02054990(PXI_FIFO_TAG_MIC, 0x02000000 | 0x01000000 | (0 << 16) | (0x0042 << 8), 0)) {
         return 0;
     }
 
@@ -5240,7 +5231,7 @@ typedef struct RTCAlarmParam {
 } RTCAlarmParam;
 extern void RTC_Init(void);
 extern RTCResult RTC_GetDate(RTCDate *date);
-extern RTCResult RTC_GetTime(RTCTime *time);
+extern RTCResult func_02057c64(RTCTime *time);
 extern RTCResult RTC_GetDateTime(RTCDate *date, RTCTime *time);
 extern RTCResult RTC_GetDateTimeExByTick(RTCDate *date, RTCTimeEx *time);
 extern RTCResult RTC_SetDate(const RTCDate *date);
@@ -6093,20 +6084,20 @@ extern GXDispSelect GX_GetDispSelect(void);
 extern s32 GX_IsHBlank(void);
 extern s32 GX_HBlankIntr(BOOL enable);
 extern s32 GX_IsVBlank(void);
-extern s32 GX_VBlankIntr(BOOL enable);
+extern s32 func_0204ee24(BOOL enable);
 extern s32 GX_IsVCountEq(void);
 extern void GX_VCountEqIntr(BOOL enable);
 extern void GX_SetVCountEqVal(s32 val);
 extern s32 GX_GetVCountEqVal(void);
 extern s32 GX_GetVCount(void);
 extern void GX_SetVCount(s32 count);
-extern void GX_Init(void);
+extern void func_0204ecd8(void);
 extern void GX_InitEx(u32 dma_no);
 extern u32 GX_SetDefaultDMA(u32 dma_no);
 extern u32 GX_GetDefaultDMA(void);
-extern void GX_SetGraphicsMode(GXDispMode dispMode, GXBGMode bgMode, GXBG0As bg0_2d3d);
+extern void func_0204eedc(GXDispMode dispMode, GXBGMode bgMode, GXBG0As bg0_2d3d);
 extern void GX_DispOff(void);
-extern void GX_DispOn(void);
+extern void func_0204ee94(void);
 extern BOOL GX_IsDispOn(void);
 extern void GX_SetVisiblePlane(int plane);
 extern void GX_SetVisibleWnd(int window);
@@ -6374,11 +6365,11 @@ static inline GXDispSelect GX_GetDispSelect(void) {
 static inline void GX_InitEx(u32 dma_no) {
     ((void) 0);
 
-    GXi_DmaId = dma_no;
-    GX_Init();
+    data_0207eec0 = dma_no;
+    func_0204ecd8();
 }
 static inline u32 GX_GetDefaultDMA(void) {
-    return GXi_DmaId;
+    return data_0207eec0;
 }
 typedef enum {
     GX_VRAM_A   = 0x0001,
@@ -6527,9 +6518,9 @@ extern void GX_SetBankForBGExtPltt(GXVRamBGExtPltt bgExtPltt);
 extern BOOL GX_TrySetBankForBGExtPltt(GXVRamBGExtPltt bgExtPltt);
 extern void GX_SetBankForOBJExtPltt(GXVRamOBJExtPltt objExtPltt);
 extern BOOL GX_TrySetBankForOBJExtPltt(GXVRamOBJExtPltt objExtPltt);
-extern void GX_SetBankForTex(GXVRamTex tex);
+extern void func_0204f62c(GXVRamTex tex);
 extern BOOL GX_TrySetBankForTex(GXVRamTex tex);
-extern void GX_SetBankForTexPltt(GXVRamTexPltt texPltt);
+extern void func_0204f804(GXVRamTexPltt texPltt);
 extern BOOL GX_TrySetBankForTexPltt(GXVRamTexPltt texPltt);
 extern void GX_SetBankForClearImage(GXVRamClearImage clrImg);
 extern BOOL GX_TrySetBankForClearImage(GXVRamClearImage clrImg);
@@ -6545,7 +6536,7 @@ extern GXVRamOBJ GX_ResetBankForOBJ(void);
 extern GXVRamBGExtPltt GX_ResetBankForBGExtPltt(void);
 extern GXVRamOBJExtPltt GX_ResetBankForOBJExtPltt(void);
 extern GXVRamTex GX_ResetBankForTex(void);
-extern GXVRamTexPltt GX_ResetBankForTexPltt(void);
+extern GXVRamTexPltt func_0204fb6c(void);
 extern GXVRamClearImage GX_ResetBankForClearImage(void);
 extern GXVRamBG GX_DisableBankForBG(void);
 extern GXVRamOBJ GX_DisableBankForOBJ(void);
@@ -8988,10 +8979,10 @@ typedef struct CTRDGLockByProc {
     BOOL locked;
     OSIntrMode irq;
 } CTRDGLockByProc;
-extern void CTRDGi_InitCommon(void);
-extern void CTRDGi_InitModuleInfo(void);
-extern void CTRDGi_SendtoPxi(u32 data);
-extern void CTRDGi_LockByProcessor(u16 lockID, CTRDGLockByProc *info);
+extern void func_02060a90(void);
+extern void func_02060e5c(void);
+extern void func_02060d10(u32 data);
+extern void func_02060c90(u16 lockID, CTRDGLockByProc *info);
 extern void CTRDGi_UnlockByProcessor(u16 lockID, CTRDGLockByProc *info);
 extern void CTRDGi_ChangeLatestAccessCycle(CTRDGRomCycle *r);
 extern void CTRDGi_RestoreAccessCycle(CTRDGRomCycle *r);
@@ -9471,12 +9462,11 @@ static inline int STD_ConvertCharSjisToUnicode(u16 *dst, const char *src) {
     STDResult ret = STD_ConvertStringSjisToUnicode(dst, &dst_len, src, &src_len, ((void *) 0));
     return (ret == STD_RESULT_SUCCESS) ? dst_len : -1;
 }
-extern STDResult STD_ConvertStringUnicodeToSjis(char *dst, int *dst_len, const u16 *src, int *src_len,
-                                                STDConvertSjisCallback callback);
+extern STDResult func_02060844(char *dst, int *dst_len, const u16 *src, int *src_len, STDConvertSjisCallback callback);
 static inline int STD_ConvertCharUnicodeToSjis(char *dst, u16 src) {
     int src_len   = 1;
     int dst_len   = 2;
-    STDResult ret = STD_ConvertStringUnicodeToSjis(dst, &dst_len, &src, &src_len, ((void *) 0));
+    STDResult ret = func_02060844(dst, &dst_len, &src, &src_len, ((void *) 0));
     return (ret == STD_RESULT_SUCCESS) ? dst_len : -1;
 }
 extern const fx16 FX_SinCosTable_[];
@@ -9558,17 +9548,17 @@ extern fx64c FX_InvFx64c(fx32 denom);
 extern fx32 FX_InvSqrt(fx32 x);
 extern void FX_DivAsync(fx32 numer, fx32 denom);
 extern void FX_DivAsyncImm(fx32 numer, fx32 denom);
-extern fx64c FX_GetDivResultFx64c(void);
-extern fx32 FX_GetDivResult(void);
+extern fx64c func_0204ebb0(void);
+extern fx32 func_0204ebd4(void);
 extern fx64c FX_GetDivRemainderFx64c(void);
 extern fx32 FX_GetDivRemainder(void);
-extern void FX_InvAsync(fx32 denom);
+extern void func_0204ec0c(fx32 denom);
 extern void FX_InvAsyncImm(fx32 denom);
 extern fx64c FX_GetInvResultFx64c(void);
 extern fx32 FX_GetInvResult(void);
-extern void FX_SqrtAsync(fx32 x);
+extern void func_0204ec3c(fx32 x);
 extern void FX_SqrtAsyncImm(fx32 x);
-extern fx32 FX_GetSqrtResult(void);
+extern fx32 func_0204ec80(void);
 extern s32 FX_DivS32(s32 a, s32 b);
 extern s32 FX_ModS32(s32 a, s32 b);
 static inline void FX_InvAsyncImm(fx32 denom) {
@@ -9578,10 +9568,10 @@ static inline void FX_InvAsyncImm(fx32 denom) {
     CP_SetDivImm64_32((u64) ((fx32) 0x0000000000001000L) << 32, (u32) denom);
 }
 static inline fx64c FX_GetInvResultFx64c(void) {
-    return FX_GetDivResultFx64c();
+    return func_0204ebb0();
 }
 static inline fx32 FX_GetInvResult(void) {
-    return FX_GetDivResult();
+    return func_0204ebd4();
 }
 static inline void FX_DivAsyncImm(fx32 numer, fx32 denom) {
     ((void) 0);
@@ -10518,7 +10508,7 @@ typedef struct {
 extern int MBi_GetLastFountParent(void);
 extern WMBssDesc *MBi_GetParentBssDesc(int parent);
 extern void MBi_SetMaxScanTime(u16 time);
-extern int MBi_SendMP(const void *buf, int len, int pollbmp);
+extern int func_0205fe84(const void *buf, int len, int pollbmp);
 extern int MBi_GetSendBufSize(void);
 extern int MBi_GetRecvBufSize(void);
 extern int MBi_CommConnectToParent(const WMBssDesc *bssDescp);
@@ -10529,8 +10519,8 @@ extern int MBi_RestartScan(void);
 extern int MBi_GetScanChannel(void);
 extern u16 MBi_GetAid(void);
 extern BOOL MBi_IsStarted(void);
-extern int MBi_CommEnd(void);
-extern void MBi_CommParentCallback(u16 type, void *arg);
+extern int func_0205fbcc(void);
+extern void func_0205bcf0(u16 type, void *arg);
 extern void MBi_CommChildCallback(u16 type, void *arg);
 typedef enum MBCommType {
     MB_COMM_TYPE_DUMMY = 0,
@@ -10560,7 +10550,7 @@ typedef struct {
 } MBErrorCallback;
 extern void MBi_BlockHeaderBegin(u8 type, u32 *sendbuf);
 extern int func_0205db3c(int body_len, u16 pollbmp, u32 *sendbuf);
-extern u16 MBi_calc_cksum(const u16 *buf, int length);
+extern u16 func_0205db74(const u16 *buf, int length);
 extern void MBi_DebugPrint(const char *file, int line, const char *func, const char *fmt, ...);
 extern void MBi_comm_type_output(u16 type);
 extern void MBi_comm_wmevent_output(u16 type, void *arg);
@@ -10591,10 +10581,10 @@ typedef struct {
     u32 data_bmp[15];
 } MbRequestPieceBuf;
 extern void MBi_SetChildMPMaxSize(u16 childMaxSize);
-extern void MBi_SetParentPieceBuffer(MbRequestPieceBuf *buf);
+extern void func_0206051c(MbRequestPieceBuf *buf);
 extern void MBi_ClearParentPieceBuffer(u16 child_aid);
 extern u8 *func_02060580(const MBCommParentBlockHeader *hdr, u8 *sendbuf);
-extern u8 *MBi_SetRecvBufferFromChild(const u8 *recvbuf, MBCommChildBlockHeader *hdr, u16 child_id);
+extern u8 *func_02060604(const u8 *recvbuf, MBCommChildBlockHeader *hdr, u16 child_id);
 extern u8 *MBi_MakeChildSendBuffer(const MBCommChildBlockHeader *hdr, u8 *sendbuf);
 extern u8 MBi_SendRequestDataPiece(u8 *pData, const MBCommRequestData *pReq);
 extern u8 *MBi_SetRecvBufferFromParent(MBCommParentBlockHeader *hdr, const u8 *recvbuf);
@@ -10668,12 +10658,12 @@ typedef enum MbBeaconMsg {
 typedef void (*MBBeaconMsgCallback)(MbBeaconMsg msg, MBGameInfoRecvList *gInfop, int index);
 typedef void (*MbScanLockFunc)(u8 *macAddress);
 typedef void (*MbScanUnlockFunc)(void);
-extern void MB_InitSendGameInfoStatus(void);
+extern void func_0205de2c(void);
 extern void MBi_MakeGameInfo(MBGameInfo *gameInfop, const MBGameRegistry *mbGameRegp, const MBUserInfo *parent);
-extern void MB_UpdateGameInfoMember(MBGameInfo *gameInfop, const MBUserInfo *member, u16 nowPlayerFlag, u16 changePlayerFlag);
-extern void MB_AddGameInfo(MBGameInfo *newGameInfop);
+extern void func_0205dd50(MBGameInfo *gameInfop, const MBUserInfo *member, u16 nowPlayerFlag, u16 changePlayerFlag);
+extern void func_0205dde8(MBGameInfo *newGameInfop);
 extern BOOL MB_DeleteGameInfo(MBGameInfo *gameInfop);
-extern void MB_SendGameInfoBeacon(u32 ggid, u16 tgid, u8 attribute);
+extern void func_0205de7c(u32 ggid, u16 tgid, u8 attribute);
 extern void MBi_SetBeaconRecvStatusBufferDefault(void);
 extern void MBi_SetBeaconRecvStatusBuffer(MbBeaconRecvStatus *buf);
 extern void MB_InitRecvGameInfoStatus(void);
@@ -10719,14 +10709,14 @@ typedef struct {
     u8 segment_no;
     u8 pad[3];
 } MB_BlockInfo;
-extern const MbSegmentType MBi_defaultLoadSegList[(3)];
+extern const MbSegmentType data_02076e40[(3)];
 static inline MbSegmentInfo *MBi_GetSegmentInfo(MbDownloadFileInfoHeader *mdfi, int i) {
     return ((MbSegmentInfo *) (mdfi + 1)) + i;
 }
-extern BOOL MBi_MakeBlockInfoTable(MB_BlockInfoTable *table, MbDownloadFileInfoHeader *mdfi);
+extern BOOL func_0205d844(MB_BlockInfoTable *table, MbDownloadFileInfoHeader *mdfi);
 extern BOOL func_0205d910(MB_BlockInfo *bi, MB_BlockInfoTable *table, u32 block, MbDownloadFileInfoHeader *mdfi);
 extern u16 MBi_get_blocknum(MB_BlockInfoTable *table);
-extern BOOL MBi_IsAbleToRecv(u8 segment_no, u32 address, u32 size);
+extern BOOL func_0205d9c4(u8 segment_no, u32 address, u32 size);
 extern int MB_StartChild(void);
 extern int MB_GetChildSystemBufSize(void);
 extern void MB_CommSetChildStateCallback(MBCommCStateCallbackFunc callback);
@@ -10751,8 +10741,8 @@ typedef struct {
     u8 reserved[32 - FS_ARCHIVE_NAME_LEN_MAX - 1 - sizeof(u32) - sizeof(FSArchive *)];
     MBiCacheInfo list[4];
 } MBiCacheList;
-extern void MBi_InitCache(MBiCacheList *pl);
-extern void MBi_AttachCacheBuffer(MBiCacheList *pl, u32 src, u32 len, void *ptr, u32 state);
+extern void func_02060044(MBiCacheList *pl);
+extern void func_02060058(MBiCacheList *pl, u32 src, u32 len, void *ptr, u32 state);
 extern BOOL func_020600c0(MBiCacheList *pl, u32 src, void *dst, u32 len);
 extern BOOL MBi_TryLoadCache(MBiCacheList *pl, u32 src, u32 len);
 struct MBiTaskInfo_tag;
@@ -10765,12 +10755,12 @@ typedef struct MBiTaskInfo_tag {
     MB_TASK_FUNC callback;
     u32 param[4];
 } MBiTaskInfo;
-extern void MBi_InitTaskThread(void *p_work, u32 size);
-extern BOOL MBi_IsTaskAvailable(void);
-extern void MBi_InitTaskInfo(MBiTaskInfo *pt);
+extern void func_02060270(void *p_work, u32 size);
+extern BOOL func_020602f0(void);
+extern void func_0206030c(MBiTaskInfo *pt);
 extern BOOL func_02060320(volatile const MBiTaskInfo *pt);
 extern void func_02060338(MBiTaskInfo *pt, MB_TASK_FUNC task, MB_TASK_FUNC callback, u32 priority);
-extern void MBi_EndTaskThread(MB_TASK_FUNC callback);
+extern void func_020604a4(MB_TASK_FUNC callback);
 typedef struct MB_CommCommonWork {
     u32 sendbuf[(0x400) / sizeof(u32)] __attribute__((aligned(32)));
     u32 recvbuf[(0x80) * 15 * 2 / sizeof(u32)] __attribute__((aligned(32)));
@@ -10836,34 +10826,34 @@ typedef struct MB_CommCWork {
     u8 _padding2[15];
 } MB_CommCWork;
 extern MB_CommCommonWork *data_0209706c;
-extern int any_recv_bitmap;
-extern void MBi_CommChangeParentState(u16 child, int state, void *arg);
-extern void MBi_CommChangeParentStateCallbackOnly(u16 child, int state, void *arg);
-extern void MBi_CommParentRecvDataPerChild(void *arg, u16 child);
-extern void MBi_CommParentRecvData(void *arg);
-extern int MBi_CommParentSendMsg(u8 type, u16 pollbmp);
-extern int MBi_CommParentSendDLFileInfo(void);
+extern int data_020915a0;
+extern void func_0205bc7c(u16 child, int state, void *arg);
+extern void func_0205bcc8(u16 child, int state, void *arg);
+extern void func_0205c190(void *arg, u16 child);
+extern void func_0205c674(void *arg);
+extern int func_0205c720(u8 type, u16 pollbmp);
+extern int func_0205c760(void);
 extern int func_0205c998(void);
-extern int MBi_CommParentSendData(void);
+extern int func_0205cc34(void);
 extern void func_0205cdb4(u8 file_id);
-extern u16 MBi_calc_nextsendblock(u16 next_block, u16 next_block_req);
+extern u16 func_0205ce30(u16 next_block, u16 next_block_req);
 extern inline u16 max(u16 a, u16 b);
-extern BOOL IsChildAidValid(u16 child_aid);
-extern void MBi_CommCallParentError(u16 aid, u16 errcode);
-extern void MB_CommSetParentStateCallback(MBCommPStateCallback callback);
+extern BOOL func_0205ce40(u16 child_aid);
+extern void func_0205ce5c(u16 aid, u16 errcode);
+extern void func_0205ba9c(MBCommPStateCallback callback);
 extern int MB_CommGetParentState(u16 child_aid);
 extern const MBUserInfo *MB_CommGetChildUser(u16 child_aid);
 extern u8 MB_CommGetChildrenNumber(void);
 extern u16 MB_GetGameEntryBitmap(const MBGameRegistry *game_reg);
 extern BOOL MB_CommIsBootable(u16 child_aid);
-extern BOOL MB_CommResponseRequest(u16 child_aid, MBCommResponseRequestType ack);
-extern void MBi_CommChangeParentState(u16 child, int state, void *arg);
-extern void MBi_CommChangeParentStateCallbackOnly(u16 child, int state, void *arg);
-extern void MBi_CommParentCallback(u16 type, void *arg);
-extern void MBi_CommParentRecvDataPerChild(void *arg, u16 child);
-extern void MBi_CommParentRecvData(void *arg);
-extern int MBi_CommParentSendMsg(u8 type, u16 pollbmp);
-extern int MBi_CommParentSendDLFileInfo(void);
+extern BOOL func_0205bb9c(u16 child_aid, MBCommResponseRequestType ack);
+extern void func_0205bc7c(u16 child, int state, void *arg);
+extern void func_0205bcc8(u16 child, int state, void *arg);
+extern void func_0205bcf0(u16 type, void *arg);
+extern void func_0205c190(void *arg, u16 child);
+extern void func_0205c674(void *arg);
+extern int func_0205c720(u8 type, u16 pollbmp);
+extern int func_0205c760(void);
 extern void func_0205c8f8(MBiTaskInfo *p_task);
 int func_0205c998(void) {
     MBCommParentBlockHeader hd;
@@ -10958,11 +10948,11 @@ int func_0205c998(void) {
                          ((MB_CommPWork *) data_0209706c)->fileinfo[((MB_CommPWork *) data_0209706c)->cur_fileid].pollbmp,
                          ((MB_CommPWork *) data_0209706c)->common.sendbuf);
 }
-extern int MBi_CommParentSendData(void);
+extern int func_0205cc34(void);
 extern void func_0205cdb4(u8 file_id);
-extern u16 MBi_calc_nextsendblock(u16 next_block, u16 next_block_req);
+extern u16 func_0205ce30(u16 next_block, u16 next_block_req);
 static inline u16 max(u16 a, u16 b) {
     return (a > b) ? a : b;
 }
-extern BOOL IsChildAidValid(u16 child_aid);
-extern void MBi_CommCallParentError(u16 aid, u16 errcode);
+extern BOOL func_0205ce40(u16 child_aid);
+extern void func_0205ce5c(u16 aid, u16 errcode);

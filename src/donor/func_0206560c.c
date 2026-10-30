@@ -65,7 +65,7 @@ typedef volatile struct {
     u32 out;
     OSPrintWChar buffer[(1024 / sizeof(OSPrintWChar))];
 } OSPrintServerBuffer;
-extern void OSi_ReferSymbol(void *symbol);
+extern void func_02000b64(void *symbol);
 static inline void *OSi_AbortByUnsupportedRegister(const char *regname, const char *file, int line) {
     (void) regname;
     (void) file;
@@ -107,7 +107,7 @@ static inline u32 MI_GetUncompressedSize(const void *srcp) {
 static inline MICompressionType MI_GetCompressionType(const void *srcp) {
     return (MICompressionType) (*(u32 *) srcp & MI_COMPRESSION_TYPE_MASK);
 }
-extern void MIi_UncompressBackward(void *bottom);
+extern void func_02000950(void *bottom);
 extern void SVC_WaitByLoop(s32 count);
 extern void SVC_CpuSet(const void *srcp, void *destp, u32 dmaCntData);
 extern void SVC_CpuSetFast(const void *srcp, void *destp, u32 dmaCntData);
@@ -159,7 +159,7 @@ extern void OS_SpinWait(u32 cycle);
 typedef u32 OSIrqMask;
 extern void OS_WaitInterrupt(BOOL clear, OSIrqMask irqFlags);
 extern void OS_WaitVBlankIntr(void);
-extern u32 SDK_AUTOLOAD_DTCM_START[];
+extern u32 data_027e0000[];
 typedef volatile struct {
 
     u8 sys_and_irq_stack[(0x4000 - 0x40 - 0x40)];
@@ -413,7 +413,7 @@ extern void OSi_CheckStack(const char *file, int line, const OSThread *thread);
 extern u32 OSi_GetSystemStackPointer(void);
 extern u32 OSi_GetCurrentStackPointer(void);
 extern OSThread *OSi_GetIdleThread(void);
-extern void OS_InitThread(void);
+extern void func_020514e8(void);
 extern BOOL OS_IsThreadAvailable(void);
 extern void OS_CreateThread(OSThread *thread, void (*func)(void *), void *arg, void *stack, u32 stackSize, u32 prio);
 extern void OS_ExitThread(void);
@@ -431,9 +431,9 @@ extern void OS_WakeupThread(OSThreadQueue *queue);
 extern void OS_WakeupThreadDirect(OSThread *thread);
 extern void OS_DumpThreadList(void);
 extern int OS_GetNumberOfThread(void);
-extern OSThreadInfo OSi_ThreadInfo;
+extern OSThreadInfo data_0208e0e4;
 static inline OSThreadInfo *OS_GetThreadInfo(void) {
-    return &OSi_ThreadInfo;
+    return &data_0208e0e4;
 }
 static inline u32 OS_GetMaxThreadId(void) {
 
@@ -468,13 +468,13 @@ static inline void OS_SetCurrentThread(OSThread *thread) {
 extern void OS_SetThreadStackWarningOffset(OSThread *thread, u32 offset);
 extern OSStackStatus OS_GetStackStatus(const OSThread *thread);
 extern BOOL OS_SetThreadPriority(OSThread *thread, u32 prio);
-extern u32 OS_GetThreadPriority(const OSThread *thread);
+extern u32 func_02051a08(const OSThread *thread);
 extern void OS_Sleep(u32 msec);
 extern OSSwitchThreadCallback OS_SetSwitchThreadCallback(OSSwitchThreadCallback callback);
 extern void OS_DumpThreadCallTrace(const OSThread *thread);
 extern u32 OS_DisableScheduler(void);
 extern u32 OS_EnableScheduler(void);
-extern void OS_SetThreadDestructor(OSThread *thread, OSThreadDestructor dtor);
+extern void func_02051ab0(OSThread *thread, OSThreadDestructor dtor);
 extern OSThreadDestructor OS_GetThreadDestructor(const OSThread *thread);
 extern void OS_SetThreadParameter(OSThread *thread, void *parameter);
 extern void *OS_GetThreadParameter(const OSThread *thread);
@@ -500,7 +500,7 @@ static inline OSThread *OS_GetNextThread(const OSThread *thread) {
     return thread->next;
 }
 extern void OSi_EnterDmaCallback(u32 dmaNo, void (*callback)(void *), void *arg);
-extern void OSi_EnterTimerCallback(u32 timerNo, void (*callback)(void *), void *arg);
+extern void func_02050da0(u32 timerNo, void (*callback)(void *), void *arg);
 typedef void (*OSIrqFunction)(void);
 typedef struct {
     void (*func)(void *);
@@ -508,10 +508,10 @@ typedef struct {
     void *arg;
 } OSIrqCallbackInfo;
 extern OSIrqFunction OS_IRQTable[];
-extern OSIrqCallbackInfo OSi_IrqCallbackInfo[(7 + 1)];
+extern OSIrqCallbackInfo data_0208e05c[(7 + 1)];
 extern void OS_IrqDummy(void);
-extern void OS_IrqHandler(void);
-extern void OS_IrqHandler_ThreadSwitch(void);
+extern void func_01ff8000(void);
+extern void func_01ff8058(void);
 static inline BOOL OS_EnableIrq(void) {
     u16 prep                               = (*(REGType16v *) (0x04000000 + 0x208));
     (*(REGType16v *) (0x04000000 + 0x208)) = (1UL << 0);
@@ -537,19 +537,19 @@ extern OSIrqMask OS_ResetRequestIrqMask(OSIrqMask intr);
 static inline OSIrqMask OS_GetRequestIrqMask(void) {
     return (*(REGType32v *) (0x04000000 + 0x214));
 }
-extern void OS_InitIrqTable(void);
-extern void OS_SetIrqFunction(OSIrqMask intrBit, OSIrqFunction function);
+extern void func_02050cb8(void);
+extern void func_02050cd0(OSIrqMask intrBit, OSIrqFunction function);
 extern OSIrqFunction OS_GetIrqFunction(OSIrqMask intrBit);
 static inline void OS_SetIrqCheckFlag(OSIrqMask intr) {
-    *(vu32 *) ((((u32) SDK_AUTOLOAD_DTCM_START) + 0x00003fc0) + 0x38) |= (u32) intr;
+    *(vu32 *) ((((u32) data_027e0000) + 0x00003fc0) + 0x38) |= (u32) intr;
 }
 static inline void OS_ClearIrqCheckFlag(OSIrqMask intr) {
-    *(vu32 *) ((((u32) SDK_AUTOLOAD_DTCM_START) + 0x00003fc0) + 0x38) &= (u32) ~intr;
+    *(vu32 *) ((((u32) data_027e0000) + 0x00003fc0) + 0x38) &= (u32) ~intr;
 }
 static inline OSIrqMask OS_GetIrqCheckFlag(void) {
-    return *(OSIrqMask *) ((((u32) SDK_AUTOLOAD_DTCM_START) + 0x00003fc0) + 0x38);
+    return *(OSIrqMask *) ((((u32) data_027e0000) + 0x00003fc0) + 0x38);
 }
-extern void OS_WaitIrq(BOOL clear, OSIrqMask irqFlags);
+extern void func_02050b38(BOOL clear, OSIrqMask irqFlags);
 extern void OS_WaitAnyIrq(void);
 static inline vu32 OS_GetVBlankCount(void) {
     return *(vu32 *) (0x02000000 + 0x007ffc3c);
@@ -559,28 +559,28 @@ static inline void OSi_SetVBlankCount(u32 count) {
 }
 extern void OS_SetIrqStackWarningOffset(u32 offset);
 extern OSStackStatus OS_GetIrqStackStatus(void);
-extern void OS_SetIrqStackChecker(void);
+extern void func_02050ea0(void);
 extern void OSi_CheckIrqStack(char *file, int line);
 typedef volatile struct OSLockWord {
     u32 lockFlag;
     u16 ownerID;
     u16 extension;
 } OSLockWord;
-extern void OS_InitLock(void);
+extern void func_02050ed4(void);
 extern s32 OS_LockByWord(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
 extern s32 OS_LockCartridge(u16 lockID);
 extern s32 OS_LockCard(u16 lockID);
-extern s32 OS_UnlockByWord(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
+extern s32 func_02051070(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
 extern s32 OS_UnlockCartridge(u16 lockID);
-extern s32 OS_UnlockCard(u16 lockID);
+extern s32 func_02051184(u16 lockID);
 extern s32 OS_UnLockByWord(u16 lockID, OSLockWord *lockp, void (*ctrlFuncp)(void));
 extern s32 OS_UnLockCartridge(u16 lockID);
 extern s32 OS_UnLockCard(u16 lockID);
 extern s32 OS_TryLockByWord(u16 lockID, OSLockWord *lockp, void (*crtlFuncp)(void));
-extern s32 OS_TryLockCartridge(u16 lockID);
+extern s32 func_02051118(u16 lockID);
 extern s32 OS_TryLockCard(u16 lockID);
 extern u16 OS_ReadOwnerOfLockWord(OSLockWord *lockp);
-extern s32 OS_GetLockID(void);
+extern s32 func_020511d8(void);
 extern void OS_ReleaseLockID(u16 lockID);
 typedef enum {
     OS_TIMER_PRESCALER_1    = (0UL << 0),
@@ -619,7 +619,7 @@ extern void OS_StopTimer(OSTimer id);
 extern void OS_StopTimer32(OSTimer32 id);
 extern void OS_StopTimer48(OSTimer48 id);
 extern void OS_StopTimer64(void);
-extern BOOL OS_IsRunOnEmulator(void);
+extern BOOL func_02051bb4(void);
 extern u32 OS_GetConsoleType(void);
 typedef struct OSMessageQueue OSMessageQueue;
 typedef void *OSMessage;
@@ -653,13 +653,13 @@ struct OSMutex {
 };
 extern void OS_InitMutex(OSMutex *mutex);
 extern void OS_LockMutex(OSMutex *mutex);
-extern void OS_UnlockMutex(OSMutex *mutex);
-extern BOOL OS_TryLockMutex(OSMutex *mutex);
+extern void func_02051e6c(OSMutex *mutex);
+extern BOOL func_02051f04(OSMutex *mutex);
 extern void OSi_UnlockAllMutex(OSThread *thread);
 typedef void (*OSExceptionHandler)(u32, void *);
 extern void OS_SetExceptionVectorUpper(void);
 extern void OS_SetExceptionVectorLower(void);
-extern void OS_InitException(void);
+extern void func_020528bc(void);
 extern void OS_SetUserExceptionHandler(OSExceptionHandler handler, void *arg);
 extern void OS_EnableUserExceptionHandlerOnDebugger(void);
 extern void OS_Init(void);
@@ -686,8 +686,8 @@ extern void OS_InitArenaEx(void);
 extern void *OS_GetArenaInfo(void);
 extern void *OS_GetArenaHi(OSArenaId id);
 extern void *OS_GetArenaLo(OSArenaId id);
-extern void *OS_GetInitArenaHi(OSArenaId id);
-extern void *OS_GetInitArenaLo(OSArenaId id);
+extern void *func_02052278(OSArenaId id);
+extern void *func_0205235c(OSArenaId id);
 extern void OS_SetArenaHi(OSArenaId id, void *newHi);
 extern void OS_SetArenaLo(OSArenaId id, void *newLo);
 extern void *OS_AllocFromArenaLo(OSArenaId id, u32 size, u32 align);
@@ -855,10 +855,10 @@ static inline void *OS_AllocFromWramSubPrivArenaHi(u32 size, u32 align) {
     return OS_AllocFromArenaHi(OS_ARENA_WRAM_SUBPRIV, size, align);
 }
 static inline void OS_InitArenaHi(OSArenaId id) {
-    OS_SetArenaHi((id), OS_GetInitArenaHi((OSArenaId) id));
+    OS_SetArenaHi((id), func_02052278((OSArenaId) id));
 }
 static inline void OS_InitArenaLo(OSArenaId id) {
-    OS_SetArenaLo((id), OS_GetInitArenaLo(id));
+    OS_SetArenaLo((id), func_0205235c(id));
 }
 static inline void OS_InitArenaHiAndLo(OSArenaId id) {
     OS_InitArenaHi(id);
@@ -870,7 +870,7 @@ typedef int OSHeapHandle;
 typedef void (*OSAllocVisitor)(void *obj, u32 size);
 extern void *OS_InitAlloc(OSArenaId id, void *arenaStart, void *arenaEnd, int maxHeaps);
 extern void OS_ClearAlloc(OSArenaId id);
-extern OSHeapHandle OS_CreateHeap(OSArenaId id, void *start, void *end);
+extern OSHeapHandle func_020527cc(OSArenaId id, void *start, void *end);
 extern void OS_DestroyHeap(OSArenaId id, OSHeapHandle heap);
 extern void OS_AddToHeap(OSArenaId id, OSHeapHandle heap, void *start, void *end);
 extern OSHeapHandle OS_SetCurrentHeap(OSArenaId id, OSHeapHandle heap);
@@ -1125,7 +1125,7 @@ typedef struct NVRAMConfigEx {
 extern void MIi_CpuClear16(u16 data, void *destp, u32 size);
 extern void MIi_CpuCopy16(const void *srcp, void *destp, u32 size);
 extern void MIi_CpuSend16(const void *srcp, volatile void *destp, u32 size);
-extern void MIi_CpuClear32(u32 data, void *destp, u32 size);
+extern void func_02053468(u32 data, void *destp, u32 size);
 extern void MIi_CpuCopy32(const void *srcp, void *destp, u32 size);
 extern void MIi_CpuSend32(const void *srcp, volatile void *destp, u32 size);
 extern void MIi_CpuClearFast(u32 data, void *destp, u32 size);
@@ -1134,7 +1134,7 @@ static inline void MI_CpuFill32(void *dest, u32 data, u32 size) {
     ((void) 0);
     ((void) 0);
 
-    MIi_CpuClear32(data, dest, size);
+    func_02053468(data, dest, size);
 }
 static inline void MI_CpuCopy32(const void *src, void *dest, u32 size) {
     ((void) 0);
@@ -1283,7 +1283,7 @@ static inline fx32 FX_Mul32x64cInline(fx32 v32, fx64c v64c) {
     fx64c tmp = v64c * v32 + 0x80000000LL;
     return FX32_CAST(tmp >> 32);
 }
-extern u32 GXi_DmaId;
+extern u32 data_0207eec0;
 typedef u16 GXRgb;
 typedef u16 GXRgba;
 typedef u32 VecFx10;
@@ -1313,7 +1313,7 @@ typedef struct OSOwnerInfo {
     u16 comment[26 + 1];
     u16 commentLength;
 } OSOwnerInfo;
-extern void OS_GetOwnerInfo(OSOwnerInfo *info);
+extern void func_02052d6c(OSOwnerInfo *info);
 extern s64 OS_GetOwnerRtcOffset(void);
 extern void OS_GetMacAddress(u8 *macAddress);
 extern const GXRgb *OS_GetFavoriteColorTable(void);
@@ -1457,8 +1457,8 @@ static inline u32 OSi_CalcPRParam(u32 address, u32 size, OSiProtectionRegionBase
     return ((address & mask) | size);
 }
 extern void OS_SetProtectionRegion0(u32 param);
-extern void OS_SetProtectionRegion1(u32 param);
-extern void OS_SetProtectionRegion2(u32 param);
+extern void func_020528ac(u32 param);
+extern void func_020528b4(u32 param);
 extern void OS_SetProtectionRegion3(u32 param);
 extern void OS_SetProtectionRegion4(u32 param);
 extern void OS_SetProtectionRegion5(u32 param);
@@ -1575,8 +1575,8 @@ static inline const char *OS_GetArgumentBuffer(void) {
     return ((void *) 0);
 }
 extern void SND_Init(void);
-extern void SNDi_LockMutex(void);
-extern void SNDi_UnlockMutex(void);
+extern void func_02053ae4(void);
+extern void func_02053af8(void);
 typedef void (*SNDAlarmHandler)(void *);
 typedef struct SNDAlarm {
     u8 enable;
@@ -1633,10 +1633,10 @@ typedef struct SNDCommand {
     SNDCommandID id;
     u32 arg[4];
 } SNDCommand;
-extern void SND_CommandInit(void);
+extern void func_02053b0c(void);
 extern struct SNDCommand *SND_AllocCommand(u32 flags);
 extern void SND_PushCommand(struct SNDCommand *command);
-extern const SNDCommand *SND_RecvCommandReply(u32 flags);
+extern const SNDCommand *func_02053be0(u32 flags);
 extern BOOL SND_FlushCommand(u32 flags);
 extern void SND_WaitForCommandProc(u32 tag);
 extern void SND_WaitForFreeCommand(int count);
@@ -1908,7 +1908,7 @@ extern void SND_SetupChannelPsg(int chNo, SNDDuty duty, int volume, SNDChannelDa
 extern void SND_SetupChannelNoise(int chNo, int volume, SNDChannelDataShift shift, int timer, int pan);
 extern void SND_SetChannelVolume(u32 chBitMask, int volume, SNDChannelDataShift shift);
 extern void SND_SetChannelTimer(u32 chBitMask, int timer);
-extern void SND_SetChannelPan(u32 chBitMask, int pan);
+extern void func_0205392c(u32 chBitMask, int pan);
 extern void SND_SetupCapture(SNDCapture capture, SNDCaptureFormat format, void *buffer_p, u32 length, BOOL loopFlag,
                              SNDCaptureIn in, SNDCaptureOut out);
 extern void SND_SetupAlarm(int alarmNo, u32 tick, u32 period, SNDAlarmHandler handler, void *arg);
@@ -1923,7 +1923,7 @@ extern void SND_ReadDriverInfo(struct SNDDriverInfo *info);
 extern void SNDi_SetPlayerParam(int playerNo, u32 offset, u32 data, int size);
 extern void SNDi_SetTrackParam(int playerNo, u32 trackBitMask, u32 offset, u32 data, int size);
 extern void SNDi_SkipSeq(int playerNo, u32 tick);
-extern void SNDi_SetSurroundDecay(int decay);
+extern void func_02053a48(int decay);
 typedef struct SNDWork {
     SNDExChannel channel[16];
     SNDPlayer player[16];
@@ -1983,7 +1983,7 @@ typedef struct SNDTrackInfo {
     u8 chCount;
     u8 channel[16];
 } SNDTrackInfo;
-extern SNDSharedWork *SNDi_SharedWork;
+extern SNDSharedWork *data_0208ffa0;
 extern s16 SND_GetPlayerLocalVariable(int playerNo, int varNo);
 extern s16 SND_GetPlayerGlobalVariable(int varNo);
 extern u32 SND_GetPlayerTickCounter(int playerNo);
@@ -2120,14 +2120,14 @@ typedef struct SNDMidiPlayer {
     u8 prio;
     u16 pad;
 } SNDMidiPlayer;
-extern const s16 SNDi_DecibelTable[128];
+extern const s16 data_02076448[128];
 extern const s16 SNDi_DecibelSquareTable[128];
 static inline
 
     s16
     SND_CalcDecibel(int scale) {
     ((void) 0);
-    return SNDi_DecibelTable[scale];
+    return data_02076448[scale];
 }
 static inline
 
@@ -2233,7 +2233,7 @@ struct NNSiFndFrmHeapHead {
 extern void *NNSi_FndGetFreeStartForFrmHeap(NNSFndHeapHandle heap);
 extern void *NNSi_FndGetFreeEndForFrmHeap(NNSFndHeapHandle heap);
 extern NNSFndHeapHandle NNS_FndCreateFrmHeapEx(void *startAddress, u32 size, u16 optFlag);
-extern void NNS_FndDestroyFrmHeap(NNSFndHeapHandle heap);
+extern void func_0206390c(NNSFndHeapHandle heap);
 extern void *NNS_FndAllocFromFrmHeapEx(NNSFndHeapHandle heap, u32 size, int alignment);
 extern void NNS_FndFreeToFrmHeap(NNSFndHeapHandle heap, int mode);
 extern u32 NNS_FndGetAllocatableSizeForFrmHeapEx(NNSFndHeapHandle heap, int alignment);
@@ -2383,22 +2383,22 @@ extern void FS_SetArchiveProc(struct FSArchive *p_arc, FS_ARCHIVE_PROC_FUNC proc
 extern void FS_NotifyArchiveAsyncEnd(FSArchive *p_arc, FSResult ret);
 extern void FSi_EndArchive(void);
 typedef void (*MIDmaCallback)(void *);
-extern void MI_DmaFill32(u32 dmaNo, void *dest, u32 data, u32 size);
-extern void MI_DmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_02052ee0(u32 dmaNo, void *dest, u32 data, u32 size);
+extern void func_02052f60(u32 dmaNo, const void *src, void *dest, u32 size);
 static inline void MI_DmaClear32(u32 dmaNo, void *dest, u32 size) {
-    MI_DmaFill32(dmaNo, dest, 0, size);
+    func_02052ee0(dmaNo, dest, 0, size);
 }
 extern void MI_DmaSend32(u32 dmaNo, const void *src, volatile void *dest, u32 size);
-extern void MI_DmaFill16(u32 dmaNo, void *dest, u16 data, u32 size);
-extern void MI_DmaCopy16(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_02052fd0(u32 dmaNo, void *dest, u16 data, u32 size);
+extern void func_02053050(u32 dmaNo, const void *src, void *dest, u32 size);
 static inline void MI_DmaClear16(u32 dmaNo, void *dest, u32 size) {
-    MI_DmaFill16(dmaNo, dest, 0, size);
+    func_02052fd0(dmaNo, dest, 0, size);
 }
 extern void MI_DmaSend16(u32 dmaNo, const void *src, volatile void *dest, u32 size);
-extern void MI_DmaFill32Async(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback callback, void *arg);
-extern void MI_DmaCopy32Async(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
+extern void func_020530bc(u32 dmaNo, void *dest, u32 data, u32 size, MIDmaCallback callback, void *arg);
+extern void func_02053180(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
 static inline void MI_DmaClear32Async(u32 dmaNo, void *dest, u32 size, MIDmaCallback callback, void *arg) {
-    MI_DmaFill32Async(dmaNo, dest, 0, size, callback, arg);
+    func_020530bc(dmaNo, dest, 0, size, callback, arg);
 }
 extern void MI_DmaSend32Async(u32 dmaNo, const void *src, volatile void *dest, u32 size, MIDmaCallback callback, void *arg);
 extern void MI_DmaFill16Async(u32 dmaNo, void *dest, u16 data, u32 size, MIDmaCallback callback, void *arg);
@@ -2408,14 +2408,14 @@ static inline void MI_DmaClear16Async(u32 dmaNo, void *dest, u32 size, MIDmaCall
 }
 extern void MI_DmaSend16Async(u32 dmaNo, const void *src, volatile void *dest, u32 size, MIDmaCallback callback, void *arg);
 extern void MI_HBlankDmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
-extern void MI_HBlankDmaCopy16(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_020533d4(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_HBlankDmaCopy32If(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_HBlankDmaCopy16If(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_VBlankDmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_VBlankDmaCopy16(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_VBlankDmaCopy32Async(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
 extern void MI_VBlankDmaCopy16Async(u32 dmaNo, const void *src, void *dest, u32 size, MIDmaCallback callback, void *arg);
-extern void MIi_CardDmaCopy32(u32 dmaNo, const void *src, void *dest, u32 size);
+extern void func_020536ac(u32 dmaNo, const void *src, void *dest, u32 size);
 extern void MI_DispMemDmaCopy(u32 dmaNo, const void *src);
 extern void MI_SendGXCommand(u32 dmaNo, const void *src, u32 commandLength);
 extern void MI_SendGXCommandAsync(u32 dmaNo, const void *src, u32 commandLength, MIDmaCallback callback, void *arg);
@@ -2532,7 +2532,7 @@ typedef enum {
 } MIWram;
 extern void MI_SetWramBank(MIWram cnt);
 extern MIWram MI_GetWramBank(void);
-extern u32 MI_SwapWord(u32 setData, volatile u32 *destp);
+extern u32 func_020536a4(u32 setData, volatile u32 *destp);
 extern u8 MI_SwapByte(u32 setData, volatile u8 *destp);
 static inline u8 MI_ReadByte(const void *address) {
     return *(u8 *) address;
@@ -2587,9 +2587,9 @@ typedef enum {
     CARD_REQUEST_MODE_SEND_VERIFY,
     CARD_REQUEST_MODE_SPECIAL
 } CARDRequestMode;
-extern void CARD_Init(void);
+extern void func_020593a4(void);
 extern BOOL CARD_IsAvailable(void);
-extern BOOL CARD_IsEnabled(void);
+extern BOOL func_020585d8(void);
 extern void CARD_CheckEnabled(void);
 extern void CARD_Enable(BOOL enable);
 extern u32 CARD_GetThreadPriority(void);
@@ -2598,57 +2598,55 @@ extern CARDResult CARD_GetResultCode(void);
 extern const u8 *CARD_GetRomHeader(void);
 extern void CARD_GetCacheFlushThreshold(u32 *icache, u32 *dcache);
 extern void CARD_SetCacheFlushThreshold(u32 icache, u32 dcache);
-extern BOOL CARD_IdentifyBackup(CARDBackupType type);
+extern BOOL func_02058c24(CARDBackupType type);
 extern u32 CARD_GetBackupTotalSize(void);
 extern u32 CARD_GetBackupSectorSize(void);
 extern u32 CARD_GetBackupPageSize(void);
 extern CARDBackupType CARD_GetCurrentBackupType(void);
 extern void CARD_LockBackup(u16 lock_id);
-extern void CARD_UnlockBackup(u16 lock_id);
+extern void func_020586b8(u16 lock_id);
 extern BOOL CARD_TryWaitBackupAsync(void);
 extern BOOL CARD_WaitBackupAsync(void);
 extern void CARD_CancelBackupAsync(void);
-extern BOOL CARDi_RequestStreamCommand(u32 src, u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async,
-                                       CARDRequest req_type, int req_retry, CARDRequestMode req_mode);
+extern BOOL func_02058b28(u32 src, u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async, CARDRequest req_type,
+                          int req_retry, CARDRequestMode req_mode);
 extern BOOL CARDi_RequestWriteSectorCommand(u32 src, u32 dst, u32 len, BOOL verify, MIDmaCallback callback, void *arg,
                                             BOOL is_async);
 static inline BOOL CARDi_ReadBackup(u32 src, void *dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_READ_BACKUP, 1,
-                                      CARD_REQUEST_MODE_RECV);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_READ_BACKUP, 1, CARD_REQUEST_MODE_RECV);
 }
 static inline BOOL CARDi_ProgramBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND);
 }
 static inline BOOL CARDi_WriteBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND);
 }
 static inline BOOL CARDi_VerifyBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_VERIFY_BACKUP, 1,
-                                      CARD_REQUEST_MODE_SEND);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_VERIFY_BACKUP, 1,
+                         CARD_REQUEST_MODE_SEND);
 }
 static inline BOOL CARDi_ProgramAndVerifyBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg,
                                                 BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND_VERIFY);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_PROGRAM_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND_VERIFY);
 }
 static inline BOOL CARDi_WriteAndVerifyBackup(u32 dst, const void *src, u32 len, MIDmaCallback callback, void *arg,
                                               BOOL is_async) {
-    return CARDi_RequestStreamCommand((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SEND_VERIFY);
+    return func_02058b28((u32) src, (u32) dst, len, callback, arg, is_async, CARD_REQ_WRITE_BACKUP, 10,
+                         CARD_REQUEST_MODE_SEND_VERIFY);
 }
 static inline BOOL CARDi_EraseBackupSector(u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SECTOR_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SPECIAL);
+    return func_02058b28(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SECTOR_BACKUP, 10,
+                         CARD_REQUEST_MODE_SPECIAL);
 }
 static inline BOOL CARDi_EraseBackupSubSector(u32 dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SUBSECTOR_BACKUP, 10,
-                                      CARD_REQUEST_MODE_SPECIAL);
+    return func_02058b28(0, (u32) dst, len, callback, arg, is_async, CARD_REQ_ERASE_SUBSECTOR_BACKUP, 10,
+                         CARD_REQUEST_MODE_SPECIAL);
 }
 static inline BOOL CARDi_EraseBackupChip(MIDmaCallback callback, void *arg, BOOL is_async) {
-    return CARDi_RequestStreamCommand(0, 0, 0, callback, arg, is_async, CARD_REQ_ERASE_CHIP_BACKUP, 1,
-                                      CARD_REQUEST_MODE_SPECIAL);
+    return func_02058b28(0, 0, 0, callback, arg, is_async, CARD_REQ_ERASE_CHIP_BACKUP, 1, CARD_REQUEST_MODE_SPECIAL);
 }
 static inline void CARD_ReadBackupAsync(u32 src, void *dst, u32 len, MIDmaCallback callback, void *arg) {
     (void) CARDi_ReadBackup(src, dst, len, callback, arg, 1);
@@ -2892,14 +2890,14 @@ static inline const CARDRomRegion *CARD_GetRomRegionOVT(MIProcessor target) {
 }
 extern void CARD_LockRom(u16 lock_id);
 extern void CARD_UnlockRom(u16 lock_id);
-extern void CARDi_ReadRom(u32 dma, const void *src, void *dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async);
+extern void func_020592ac(u32 dma, const void *src, void *dst, u32 len, MIDmaCallback callback, void *arg, BOOL is_async);
 extern BOOL CARD_TryWaitRomAsync(void);
-extern void CARD_WaitRomAsync(void);
+extern void func_02059408(void);
 static inline void CARD_ReadRomAsync(u32 dma, const void *src, void *dst, u32 len, MIDmaCallback callback, void *arg) {
-    CARDi_ReadRom(dma, src, dst, len, callback, arg, 1);
+    func_020592ac(dma, src, dst, len, callback, arg, 1);
 }
 static inline void CARD_ReadRom(u32 dma, const void *src, void *dst, u32 len) {
-    CARDi_ReadRom(dma, src, dst, len, ((void *) 0), ((void *) 0), 0);
+    func_020592ac(dma, src, dst, len, ((void *) 0), ((void *) 0), 0);
 }
 extern u32 CARDi_ReadRomID(void);
 typedef BOOL (*CARDPulledOutCallback)(void);
@@ -2908,7 +2906,7 @@ extern void CARD_SetPulledOutCallback(CARDPulledOutCallback callback);
 extern void CARD_TerminateForPulledOut(void);
 extern void CARD_PulledOutCallbackProc(void);
 extern void CARD_CheckPulledOut(void);
-extern BOOL CARD_IsPulledOut(void);
+extern BOOL func_02059680(void);
 extern BOOL CARD_IsCardIreqLo(void);
 extern BOOL CARD_CompareCardID(void);
 extern void MIi_LockCard(void);
@@ -2932,7 +2930,7 @@ static inline BOOL MIi_TryWaitCard(void) {
     return CARD_TryWaitRomAsync();
 }
 static inline void MIi_WaitCard(void) {
-    CARD_WaitRomAsync();
+    func_02059408();
 }
 typedef struct {
     u8 *destp;
@@ -3263,7 +3261,7 @@ extern s32 FS_ReadFileAsync(FSFile *p_file, void *dst, s32 len);
 extern s32 FS_WriteFile(FSFile *p_file, const void *src, s32 len);
 extern s32 FS_WriteFileAsync(FSFile *p_file, const void *src, s32 len);
 extern BOOL FS_WaitAsync(FSFile *p_file);
-extern void FS_CancelFile(FSFile *p_file);
+extern void func_0205639c(FSFile *p_file);
 extern BOOL FS_SeekFile(FSFile *p_file, s32 offset, FSSeekFileMode origin);
 static inline BOOL FS_SeekFileToBegin(FSFile *p_file) {
     return FS_SeekFile(p_file, 0, FS_SEEK_SET);
@@ -3455,7 +3453,7 @@ typedef struct NNSSndSeqData {
     u32 data[0];
 } NNSSndSeqData;
 extern u32 NNSi_SndSeqArcGetSeqCount(const struct NNSSndSeqArc *seqArc);
-extern const NNSSndSeqArcSeqInfo *NNSi_SndSeqArcGetSeqInfo(const struct NNSSndSeqArc *seqArc, int seqNo);
+extern const NNSSndSeqArcSeqInfo *func_02067a9c(const struct NNSSndSeqArc *seqArc, int seqNo);
 typedef enum NNSSndArcSndType {
     NNS_SNDARC_SNDTYPE_SEQ,
     NNS_SNDARC_SNDTYPE_BANK,
@@ -3575,10 +3573,10 @@ typedef struct NNSSndArc {
 } NNSSndArc;
 extern void NNS_SndArcInit(NNSSndArc *arc, const char *filePath, NNSSndHeapHandle heap, BOOL symbolLoadFlag);
 extern BOOL NNS_SndArcInitWithResult(NNSSndArc *arc, const char *filePath, NNSSndHeapHandle heap, BOOL symbolLoadFlag);
-extern BOOL NNS_SndArcSetup(NNSSndArc *arc, NNSSndHeapHandle heap, BOOL symbolLoadFlag);
+extern BOOL func_02064d38(NNSSndArc *arc, NNSSndHeapHandle heap, BOOL symbolLoadFlag);
 extern void NNS_SndArcInitOnMemory(NNSSndArc *arc, void *data);
 extern NNSSndArc *NNS_SndArcSetCurrent(NNSSndArc *arc);
-extern NNSSndArc *NNS_SndArcGetCurrent(void);
+extern NNSSndArc *func_02064f28(void);
 extern const NNSSndSeqParam *NNS_SndArcGetSeqParam(int seqNo);
 extern const NNSSndSeqParam *NNS_SndArcGetSeqArcParam(int seqArcNo, int index);
 extern const NNSSndArcSeqInfo *NNS_SndArcGetSeqInfo(int seqNo);
@@ -3596,10 +3594,10 @@ extern u32 NNS_SndArcGetWaveArcCount(void);
 extern u32 NNS_SndArcGetStrmCount(void);
 extern u32 NNS_SndArcGetGroupCount(void);
 extern u32 NNS_SndArcGetSeqArcSeqCount(int seqArcNo);
-extern s32 NNS_SndArcReadFile(u32 fileId, void *buffer, s32 size, s32 offset);
-extern FSFileID NNS_SndArcGetFileID(void);
+extern s32 func_020652a8(u32 fileId, void *buffer, s32 size, s32 offset);
+extern FSFileID func_02065320(void);
 extern u32 NNS_SndArcGetFileSize(u32 fileId);
-extern u32 NNS_SndArcGetFileOffset(u32 fileId);
+extern u32 func_02065258(u32 fileId);
 extern void *NNS_SndArcGetFileAddress(u32 fileId);
 extern void NNS_SndArcSetFileAddress(u32 fileId, void *address);
 extern void NNS_SndArcSetLoadBlockSize(s32 loadBlockSize);
@@ -3612,16 +3610,16 @@ extern const char *NNS_SndArcGetWaveArcSymbol(int waveArcNo);
 extern const char *NNS_SndArcGetStrmSymbol(int strmNo);
 extern const char *NNS_SndArcGetGroupSymbol(int groupNo);
 extern NNSSndSeqData *LoadSeq(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-extern NNSSndSeqArc *LoadSeqArc(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-extern SNDBankData *LoadBank(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-extern SNDWaveArc *LoadWaveArc(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-extern SNDWaveArc *LoadWaveArcTable(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+extern NNSSndSeqArc *func_02065acc(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+extern SNDBankData *func_02065b38(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+extern SNDWaveArc *func_02065ba4(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+extern SNDWaveArc *func_02065c10(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
 extern BOOL func_0212dd64(SNDWaveArc *waveArc, const SNDBankData *bank, int waveArcNo, u32 fileId, NNSSndHeapHandle heap);
 extern BOOL func_0212de34(SNDWaveArc *waveArc, int waveNo, u32 fileId, NNSSndHeapHandle heap);
 extern void DisposeCallback(void *mem, NNSSndArc *arc, u32 fileId);
 extern void SeqDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
 extern void BankDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
-extern void WaveArcDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
+extern void func_02065dc8(void *mem, u32 size, u32 data1, u32 data2);
 extern void WaveArcTableDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
 extern void SingleWaveDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
 BOOL NNS_SndArcLoadGroup(int groupNo, NNSSndHeapHandle heap);
@@ -3686,14 +3684,14 @@ NNSSndArcLoadResult func_02065934(int waveArcNo, u32 loadFlag, NNSSndHeapHandle 
                                   struct SNDWaveArc **pData);
 void *NNSi_SndArcLoadFile(u32 fileId, NNSSndHeapDisposeCallback callback, u32 data1, u32 data2, NNSSndHeapHandle heap);
 NNSSndSeqData *LoadSeq(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-NNSSndSeqArc *LoadSeqArc(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-SNDBankData *LoadBank(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-SNDWaveArc *LoadWaveArc(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
-SNDWaveArc *LoadWaveArcTable(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+NNSSndSeqArc *func_02065acc(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+SNDBankData *func_02065b38(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+SNDWaveArc *func_02065ba4(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
+SNDWaveArc *func_02065c10(u32 fileId, NNSSndHeapHandle heap, BOOL bSetAddr);
 void DisposeCallback(void *mem, NNSSndArc *arc, u32 fileId);
 void SeqDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
 void BankDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
-void WaveArcDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
+void func_02065dc8(void *mem, u32 size, u32 data1, u32 data2);
 void WaveArcTableDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
 void SingleWaveDisposeCallback(void *mem, u32 size, u32 data1, u32 data2);
 BOOL func_0212de34(SNDWaveArc *waveArc, int waveNo, u32 fileId, NNSSndHeapHandle heap);

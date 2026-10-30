@@ -271,7 +271,7 @@ typedef struct FSFile {
 
 } FSFile;
 extern BOOL func_020563f4(FSFile *p_file, s32 offset, FSSeekFileMode origin);
-extern FSResult (*const(fsi_default_command[]))(FSFile *);
+extern FSResult (*const(data_02076e1c[]))(FSFile *);
 BOOL func_020563f4(FSFile *p_file, s32 offset, FSSeekFileMode origin) {
     ;
     ;
