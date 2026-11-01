@@ -2451,12 +2451,6 @@ data_02076f20 kind:data(any) addr:0x02076f20
 data_02076f60 kind:data(any) addr:0x02076f60
 data_02076f70 kind:data(any) addr:0x02076f70
 data_02077024 kind:data(any) addr:0x02077024
-.p__sinit_02071ce0 kind:data(word) addr:0x02077124
-.p__sinit_02071d20 kind:data(word) addr:0x02077128
-.p__sinit_02071dac kind:data(word) addr:0x0207712c
-.p__sinit_02071dd4 kind:data(word) addr:0x02077130
-.p__sinit_02071e00 kind:data(word) addr:0x02077134
-.p__sinit_02071e3c kind:data(word) addr:0x02077138
 data_02077140 kind:data(any) addr:0x02077140
 data_02077144 kind:data(any) addr:0x02077144
 data_02077148 kind:data(any) addr:0x02077148

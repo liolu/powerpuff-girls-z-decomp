@@ -4,4 +4,4 @@
 extern u8 __sinit_02071e00[];
 #pragma define_section TABLE ".ctor"    \
                              ".ctor" RW
-__declspec(TABLE) u32.p__sinit_02071e00[1] = {(u32) &__sinit_02071e00};
+__declspec(TABLE) u32 data_02077134[1] = {(u32) &__sinit_02071e00};
