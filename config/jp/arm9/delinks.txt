@@ -7430,3 +7430,43 @@ src/data/main_rodata_02072dd4.c:
 src/data/main_rodata_02072e24.c:
     complete
     .rodata     start:0x02072e24 end:0x02072e48
+
+src/data/main_data_0207719c.c:
+    complete
+    .data       start:0x0207719c end:0x020771f4
+
+src/data/main_bss_0208e028.c:
+    complete
+    .bss        start:0x0208e028 end:0x0208e02a
+
+src/data/main_bss_0208e02a.c:
+    complete
+    .bss        start:0x0208e02a end:0x0208e032
+
+src/data/main_bss_0208e032.c:
+    complete
+    .bss        start:0x0208e032 end:0x0208e034
+
+src/data/main_ctor_02077124.c:
+    complete
+    .ctor       start:0x02077124 end:0x02077128
+
+src/data/main_ctor_02077128.c:
+    complete
+    .ctor       start:0x02077128 end:0x0207712c
+
+src/data/main_ctor_0207712c.c:
+    complete
+    .ctor       start:0x0207712c end:0x02077130
+
+src/data/main_ctor_02077130.c:
+    complete
+    .ctor       start:0x02077130 end:0x02077134
+
+src/data/main_ctor_02077134.c:
+    complete
+    .ctor       start:0x02077134 end:0x02077138
+
+src/data/main_ctor_02077138.c:
+    complete
+    .ctor       start:0x02077138 end:0x0207713c
