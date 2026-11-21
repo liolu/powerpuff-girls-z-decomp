@@ -1,5 +1,7 @@
 # Powerpuff Girls Z decompilation (JP)
 
+> **This game moved to [liolu/All-nds-decomp-games](https://github.com/liolu/All-nds-decomp-games/tree/main/games/P/powerpuff-girls-z)** (`games/P/powerpuff-girls-z`), with its whole history: every Nintendo DS decompilation in one repository, one game downloadable on its own (`python nds.py get powerpuff-girls-z`). This repository is archived; issues and pull requests go there.
+
 <!-- bytematch:start -->
 [![Code](https://bytematch.dev/liolu/powerpuff-girls-z-decomp.svg?label=Code&measure=matched_code_percent)](https://bytematch.dev/liolu/powerpuff-girls-z-decomp) [![Data](https://bytematch.dev/liolu/powerpuff-girls-z-decomp.svg?label=Data&measure=matched_data_percent)](https://bytematch.dev/liolu/powerpuff-girls-z-decomp) [![Functions](https://bytematch.dev/liolu/powerpuff-girls-z-decomp.svg?label=Functions&measure=matched_functions)](https://bytematch.dev/liolu/powerpuff-girls-z-decomp)
 <!-- bytematch:end -->
